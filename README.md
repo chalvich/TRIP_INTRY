@@ -1,6 +1,6 @@
 # Itinerario · Puerto Rico (18–24 nov 2026)
 
-Página de una sola pantalla para ver el viaje día por día.
+Página de una sola pantalla para ver el viaje día por día
 
 ## Archivos
 - `index.html` — la página (diseño, navegación y editor).
