@@ -66,6 +66,8 @@ img{display:block;max-width:100%}
 .fl-route i{font-style:normal;color:var(--sage);font-size:.95rem;margin:0 4px}
 .fl-time{font-size:.8rem;color:var(--muted);white-space:nowrap}
 .fl-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 10px}
+.al-logo{height:26px;width:auto;max-width:120px;object-fit:contain}
+.fl-logo{height:16px;width:auto;max-width:56px;object-fit:contain}
 .airline{font-weight:500;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);background:var(--cafe);padding:5px 12px;border-radius:8px}
 .fl-legs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pt{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
@@ -129,11 +131,12 @@ img{display:block;max-width:100%}
 .arch h1,.day-title{view-transition-name:title}
 .eyebrow,.day-num{view-transition-name:kicker}
 .vbody{view-transition-name:vbody}
-.dial{view-transition-name:dial}
+.knob{view-transition-name:knob}
+.track{view-transition-name:track}
 .bubble{view-transition-name:bubble}
 ::view-transition-old(root),::view-transition-new(root){animation:none}
-::view-transition-old(dial),::view-transition-old(bubble){display:none}
-::view-transition-new(dial),::view-transition-new(bubble){animation:none}
+::view-transition-old(knob),::view-transition-old(track),::view-transition-old(bubble){display:none}
+::view-transition-new(knob),::view-transition-new(track),::view-transition-new(bubble){animation:none}
 ::view-transition-group(hero),::view-transition-group(title),::view-transition-group(kicker){animation-duration:.55s;animation-timing-function:cubic-bezier(.2,.85,.25,1)}
 ::view-transition-old(hero),::view-transition-new(hero){height:100%;object-fit:cover;animation-duration:.45s}
 ::view-transition-old(vbody){animation:vt-out .26s ease both}
@@ -148,7 +151,7 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
 .page.enter-fwd .vbody{animation:vt-in .45s cubic-bezier(.2,.85,.25,1) both}
 .page.enter-back .vbody{animation:vt-in-back .45s cubic-bezier(.2,.85,.25,1) both}
 .page.enter-fwd .arch,.page.enter-fwd .day-hero,.page.enter-back .arch,.page.enter-back .day-hero{animation:pop .4s ease both}
-.dial-rail.snap .dmark,.dial-rail.snap .dtick{transition:transform .3s cubic-bezier(.2,.85,.25,1),opacity .3s}
+
 
 /* votaciones */
 .poll{margin-top:10px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px}
@@ -169,19 +172,23 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
 .poll-foot{font-size:.75rem;color:var(--muted);margin-top:6px}
 
 /* ---------- rueda de fechas (derecha) ---------- */
-.dial{position:fixed;right:0;top:50%;transform:translateY(-50%);width:var(--dial-w);height:min(31vh,220px);z-index:30;touch-action:none;user-select:none;-webkit-user-select:none;cursor:ns-resize;
-  background:rgba(251,248,242,.62);border:1px solid rgba(95,107,72,.3);box-shadow:-4px 0 16px rgba(46,58,41,.08);border-right:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:18px 0 0 18px;
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);transition:background .25s,width .25s,border-color .25s}
-.dial.active{width:calc(var(--dial-w) + 6px);background:rgba(164,174,142,.82);border-color:rgba(95,107,72,.4)}
-.dial-rail{position:absolute;inset:0;overflow:hidden}
-.dmark,.dtick{position:absolute;left:0;top:0;will-change:transform,opacity}
-.dmark{width:100%;border:0;background:none;color:var(--forest);display:flex;flex-direction:column;align-items:center;padding:0 0 0 3px;pointer-events:auto}
-.dmark b{font-family:var(--serif);font-weight:600;font-size:1rem;line-height:1}
-.dmark small{font-size:.42rem;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
-.dtick{left:15px;width:6px;height:1px;background:rgba(46,58,41,.35)}
-.dial-center{position:absolute;left:0;top:50%;width:3px;height:18px;transform:translateY(-50%);border-radius:0 3px 3px 0;background:var(--terra)}
-.dial-hint{display:none}
-.bubble{position:fixed;right:calc(var(--dial-w) + 14px);top:50%;transform:translate(10px,-50%);opacity:0;pointer-events:none;z-index:31;background:var(--cream);color:var(--forest);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 10px 30px rgba(46,58,41,.2);transition:opacity .2s,transform .2s;white-space:nowrap;text-align:right}
+.dial{position:fixed;right:0;top:0;width:0;height:0;z-index:30}
+.knob{position:fixed;right:12px;top:70vh;width:50px;height:50px;margin-top:-25px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(251,248,242,.74);border:1px solid rgba(95,107,72,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(46,58,41,.16);color:var(--forest);
+  touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;z-index:2;transition:top .35s cubic-bezier(.2,.85,.25,1),transform .2s,background .2s,box-shadow .2s}
+.knob b{font-family:var(--serif);font-weight:600;font-size:1.15rem;line-height:1}
+.knob small{font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;opacity:.8}
+.dial.open .knob{background:rgba(164,174,142,.96);border-color:rgba(95,107,72,.5);transform:scale(1.14);box-shadow:0 10px 26px rgba(46,58,41,.25)}
+.dial.drag .knob{transition:transform .2s,background .2s,box-shadow .2s;cursor:grabbing}
+.track{position:fixed;right:10px;width:54px;border-radius:27px;background:rgba(245,239,228,.88);border:1px solid rgba(95,107,72,.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:-6px 0 24px rgba(46,58,41,.14);
+  opacity:0;transform:scaleY(.3);pointer-events:none;transition:opacity .2s ease,transform .32s cubic-bezier(.2,.85,.25,1)}
+.dial.open .track{opacity:1;transform:none;pointer-events:auto}
+.stop{position:absolute;left:0;right:0;height:40px;margin-top:-20px;border:0;background:none;color:var(--forest);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:scale(.5);opacity:0;transition:transform .3s cubic-bezier(.2,.85,.25,1),opacity .25s}
+.dial.open .stop{transform:scale(1);opacity:.8}
+.stop b{font-family:var(--serif);font-weight:600;font-size:1.15rem;line-height:1}
+.stop small{font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;opacity:.75}
+.stop+.stop::before{content:"";position:absolute;top:-2px;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:rgba(46,58,41,.3)}
+.bubble{position:fixed;right:84px;top:70vh;transform:translate(10px,-50%);opacity:0;pointer-events:none;z-index:31;background:var(--cream);color:var(--forest);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 10px 30px rgba(46,58,41,.2);transition:opacity .2s,transform .2s;white-space:nowrap;text-align:right}
 .bubble.on{opacity:1;transform:translate(0,-50%)}
 .bubble b{display:block;font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.25rem;line-height:1.1}
 .bubble small{font-size:.72rem;color:var(--muted)}
@@ -230,11 +237,10 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
 
 <div id="stage" class="stage"><main id="page" class="page" aria-live="polite"></main></div>
 
-<nav id="dial" class="dial" aria-label="Rueda de fechas: desliza para moverte entre días">
-  <div id="rail" class="dial-rail"></div>
-  <span class="dial-center"></span>
-  <span class="dial-hint up">▲</span><span class="dial-hint down">▼</span>
-</nav>
+<div id="dial" class="dial">
+  <div id="track" class="track" role="listbox" aria-label="Fechas del viaje"><div id="rail"></div></div>
+  <button id="knob" class="knob" aria-label="Cambiar de día: desliza hacia arriba o abajo"><b>✦</b><small>Inicio</small></button>
+</div>
 <div id="bubble" class="bubble" aria-hidden="true"></div>
 
 <div id="scrim" class="scrim"></div>
@@ -272,7 +278,7 @@ const AIRPORTS = {
   CUN:{ city:'Cancún', name:'Aeropuerto Internacional de Cancún' }
 };
 const $ = s => document.querySelector(s);
-const stage = $('#stage'), page = $('#page'), dial = $('#dial'), rail = $('#rail'), bubble = $('#bubble'), scrim = $('#scrim');
+const stage = $('#stage'), page = $('#page'), dial = $('#dial'), rail = $('#rail'), knob = $('#knob'), trackEl = $('#track'), bubble = $('#bubble'), scrim = $('#scrim');
 const editor = $('#editor'), edBody = $('#edBody');
 let state, fileData, edTab = 'days', edDay = 0;
 const openFolds = new Set();
@@ -419,10 +425,10 @@ function flightRow(f, scope){
     <div class="ap">${esc(ap.name || '')}${ap.city ? `<br><span style="color:var(--muted)">${esc(ap.city)}</span>` : ''}</div>
     ${term ? `<span class="term">Terminal ${esc(term)}</span>` : ''}${tm(t)}</div>`;
   const summary = `<span class="dot ${ok ? 'ok' : 'warn'}" title="${ok ? 'Confirmado' : 'Pendiente'}"></span>
-    <span class="fl-code">${esc(f.code || 'Vuelo')}</span>
+    ${safeUrl(f.logo) ? `<img class="fl-logo" src="${esc(safeUrl(f.logo))}" alt="${esc(f.airline || '')}">` : ''}<span class="fl-code">${esc(f.code || 'Vuelo')}</span>
     <span class="fl-route">${esc(f.from)}<i>→</i>${esc(f.to)}</span>
     <span class="fl-time">${esc(f.dep || '')}</span>`;
-  const body = `<div class="fl-top">${f.airline ? `<span class="airline">${esc(f.airline)}</span>` : '<span></span>'}<span class="badge ${ok ? 'ok' : 'warn'}">${ok ? 'Confirmado' : 'Pendiente'}</span></div>
+  const body = `<div class="fl-top">${safeUrl(f.logo) ? `<img class="al-logo" src="${esc(safeUrl(f.logo))}" alt="${esc(f.airline || '')}">` : f.airline ? `<span class="airline">${esc(f.airline)}</span>` : '<span></span>'}<span class="badge ${ok ? 'ok' : 'warn'}">${ok ? 'Confirmado' : 'Pendiente'}</span></div>
     <div class="fl-legs">${pt('Salida', f.from, A, f.depTerm, f.dep)}${pt('Llegada', f.to, B, f.arrTerm, f.arr)}</div>
     <p class="fl-foot">${esc(cap(fmt(f.date,{weekday:'long',day:'numeric',month:'long'})))}${f.note ? ' · ' + esc(f.note) : ''}</p>
     <div class="links">${A.name ? `<a href="${mapsQ(A.name)}" target="_blank" rel="noopener">Cómo llegar a ${esc(f.from)} ↗</a>` : ''}${num ? `<a href="https://www.google.com/search?q=${encodeURIComponent(num + ' estado del vuelo')}" target="_blank" rel="noopener">Estado del ${esc(num)} ↗</a>` : ''}</div>`;
@@ -519,33 +525,40 @@ page.addEventListener('toggle', e => {
   e.target.open ? openFolds.add(k) : openFolds.delete(k);
 }, true);
 
-/* ---------- rueda de fechas + cambio de pantalla con morph ---------- */
-const GAP = 30;               // px entre fechas en la rueda
-let cur = 0, pos = 0, dragging = false, bubbleT, vt, lastWheel = 0;
+/* ---------- bolita tipo zoom de cámara + cambio de pantalla con morph ---------- */
+const STEP = 42, PAD = 27;    // separación entre fechas y margen del riel
+let cur = 0, pos = 0, dragging = false, open = false, sticky = false, bubbleT, vt, lastWheel = 0, trackTop = 0;
 const stopCount = () => state.days.length + 1;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const anchorY = () => Math.round(innerHeight * 0.7);   // altura del pulgar
+const trackH = () => (stopCount() - 1) * STEP + PAD * 2;
+const stopLabel = i => {
+  const d = state.days[i - 1];
+  return i === 0 ? ['✦','Inicio'] : [d?.date ? asDate(d.date).getDate() : i, fmt(d?.date,{weekday:'short'}).replace('.','')];
+};
 
 function buildDial(){
   const n = stopCount(); let h = '';
   for (let i = 0; i < n; i++){
-    const d = state.days[i - 1];
-    const b = i === 0 ? '✦' : (d?.date ? asDate(d.date).getDate() : i);
-    const s = i === 0 ? 'Inicio' : fmt(d?.date,{weekday:'short'}).replace('.','');
-    h += `<button class="dmark" data-y="${i}" data-i="${i}" tabindex="-1" aria-label="${i ? 'Día ' + i : 'Inicio'}"><b>${esc(b)}</b><small>${esc(s)}</small></button>`;
-    if (i < n - 1) for (let k = 1; k < 4; k++) h += `<span class="dtick" data-y="${i + k/4}"></span>`;
+    const [b, s] = stopLabel(i);
+    h += `<button class="stop" data-i="${i}" style="top:${PAD + i * STEP}px" aria-label="${i ? 'Día ' + i : 'Inicio'}"><b>${esc(b)}</b><small>${esc(s)}</small></button>`;
   }
   rail.innerHTML = h;
+  trackEl.style.height = trackH() + 'px';
   paintDial();
 }
+function layoutTrack(){
+  trackTop = clamp(anchorY() - PAD - cur * STEP, 14, innerHeight - trackH() - 14);
+  trackEl.style.top = trackTop + 'px';
+  trackEl.style.transformOrigin = `50% ${anchorY() - trackTop}px`;
+  rail.querySelectorAll('.stop').forEach(s => { s.style.transitionDelay = Math.abs(+s.dataset.i - cur) * 25 + 'ms'; });
+}
 function paintDial(){
-  const mid = dial.clientHeight / 2;
-  rail.querySelectorAll('[data-y]').forEach(el => {
-    const d = +el.dataset.y - pos, ad = Math.abs(d);
-    const curve = Math.min(14, ad * ad * 2.2);       // se curva hacia afuera como una rueda
-    const sc = el.classList.contains('dmark') ? Math.max(.65, 1 - ad * .12) : 1;
-    el.style.transform = `translate(${curve}px, ${mid + d * GAP}px) translateY(-50%) scale(${sc})`;
-    el.style.opacity = Math.max(0, 1 - ad * .3);
-  });
+  const y = open ? trackTop + PAD + pos * STEP : anchorY();
+  const [b, s] = stopLabel(Math.round(pos));
+  knob.innerHTML = `<b>${esc(b)}</b><small>${esc(s)}</small>`;
+  knob.style.top = y + 'px';
+  bubble.style.top = y + 'px';
 }
 function showBubble(i, stay){
   const d = state.days[i - 1];
@@ -556,15 +569,12 @@ function showBubble(i, stay){
   clearTimeout(bubbleT);
   if (!stay) bubbleT = setTimeout(() => bubble.classList.remove('on'), 900);
 }
-function snapDial(){
-  pos = cur;
-  rail.classList.add('snap'); paintDial();
-  setTimeout(() => rail.classList.remove('snap'), 320);
-}
+function expand(){ if (open) return; layoutTrack(); open = true; dial.classList.add('open'); }
+function collapse(){ open = false; sticky = false; pos = cur; dial.classList.remove('open','drag'); paintDial(); showBubble(cur); }
 
 function show(i){
   i = clamp(i, 0, stopCount() - 1);
-  if (i === cur){ if (!dragging) snapDial(); return; }
+  if (i === cur){ if (!dragging){ pos = cur; paintDial(); } return; }
   const dir = i > cur ? 'fwd' : 'back';
   document.documentElement.dataset.dir = dir;
   cur = i;
@@ -576,45 +586,45 @@ function show(i){
     renderView(true);
     if (!reduceMotion){ page.classList.remove('enter-fwd','enter-back'); void page.offsetWidth; page.classList.add('enter-' + dir); }
   }
-  if (!dragging) snapDial();
+  if (!dragging){ pos = cur; paintDial(); }
   if (navigator.vibrate) navigator.vibrate(6);
-  showBubble(i, dragging);
+  showBubble(i, dragging || sticky);
 }
 
 let startY = 0, startPos = 0, moved = 0;
-dial.addEventListener('pointerdown', e => {
-  dragging = true; moved = 0; startY = e.clientY; startPos = pos;
-  dial.setPointerCapture(e.pointerId); dial.classList.add('active');
-  showBubble(cur, true);
+knob.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  dragging = true; moved = 0; startY = e.clientY; startPos = pos = cur;
+  expand(); dial.classList.add('drag');
+  knob.setPointerCapture(e.pointerId);
+  paintDial(); showBubble(cur, true);
+  if (navigator.vibrate) navigator.vibrate(8);
 });
-dial.addEventListener('pointermove', e => {
+knob.addEventListener('pointermove', e => {
   if (!dragging) return;
   const dy = e.clientY - startY; moved = Math.max(moved, Math.abs(dy));
   if (moved < 4) return;
-  pos = clamp(startPos - dy / GAP, 0, stopCount() - 1);
+  pos = clamp(startPos + dy / STEP, 0, stopCount() - 1);   // tope en Inicio y en el último día
   paintDial();
   const r = Math.round(pos);
   if (r !== cur) show(r);
 });
-function endDrag(e){
+function endDrag(){
   if (!dragging) return;
-  dragging = false; dial.classList.remove('active');
-  if (moved < 6){
-    const m = document.elementFromPoint(e.clientX, e.clientY)?.closest('.dmark');
-    if (m && +m.dataset.i !== cur) return show(+m.dataset.i);
-    const r = dial.getBoundingClientRect();
-    if (!m) return show(cur + (e.clientY < r.top + r.height / 2 ? -1 : 1));
-  }
-  snapDial(); showBubble(cur);
+  dragging = false; dial.classList.remove('drag');
+  if (moved < 6 && !sticky){ sticky = true; pos = cur; paintDial(); showBubble(cur, true); return; }   // un toque deja la rueda abierta
+  collapse();
 }
-dial.addEventListener('pointerup', endDrag);
-dial.addEventListener('pointercancel', endDrag);
-dial.addEventListener('wheel', e => {
+knob.addEventListener('pointerup', endDrag);
+knob.addEventListener('pointercancel', endDrag);
+trackEl.addEventListener('click', e => { const s = e.target.closest('.stop'); if (!s) return; show(+s.dataset.i); collapse(); });
+document.addEventListener('pointerdown', e => { if (open && !dragging && !e.target.closest('#dial')) collapse(); });
+knob.addEventListener('wheel', e => {
   e.preventDefault();
   const now = Date.now(); if (now - lastWheel < 280) return; lastWheel = now;
   show(cur + Math.sign(e.deltaY));
 }, { passive:false });
-addEventListener('resize', paintDial);
+addEventListener('resize', () => { if (open) layoutTrack(); paintDial(); });
 
 /* deslizar de lado sobre la pantalla también cambia de día */
 let sx = null, sy = 0, st0 = 0;
@@ -736,6 +746,7 @@ function renderEditor(){
     h = state.flights.map((f,i) => `<div class="eb">
       <div class="eb-h">${esc(f.code || 'Vuelo')} <span class="tools"><button class="btn sm danger" data-act="del" data-list="flights" data-i="${i}">Eliminar</button></span></div>
       <div class="grid2">${F('Vuelo',`flights.${i}.code`,'text','AV0045')}${F('Aerolínea',`flights.${i}.airline`,'text','Avianca')}</div>
+      ${F('Logo de la aerolínea (imagen)',`flights.${i}.logo`,'text','fotos/aerolinea.png')}
       <div class="grid2">${S('Trayecto',`flights.${i}.leg`,[['ida','Ida'],['regreso','Regreso']])}${F('Fecha',`flights.${i}.date`,'date')}</div>
       <div class="grid2">${F('Desde',`flights.${i}.from`,'text','MEX')}${F('Hacia',`flights.${i}.to`,'text','SJU')}</div>
       <div class="grid2">${F('Terminal salida',`flights.${i}.depTerm`,'text','1')}${F('Terminal llegada',`flights.${i}.arrTerm`,'text','D')}</div>
