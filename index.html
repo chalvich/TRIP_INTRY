@@ -18,11 +18,12 @@
   --dial-w:46px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+html,body{height:100%}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow:hidden}
 button{font:inherit;cursor:pointer}
 img{display:block;max-width:100%}
-.page{max-width:600px;margin:0 auto;padding:0 calc(var(--dial-w) + 12px) 40vh 18px}
+.stage{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.page{max-width:600px;min-height:100%;margin:0 auto;padding:0 calc(var(--dial-w) + 12px) 60px 18px}
 @media (min-width:700px){.page{padding-left:24px;padding-right:24px}}
 
 /* ---------- portada ---------- */
@@ -82,10 +83,9 @@ img{display:block;max-width:100%}
 .fold-body p.muted{color:var(--muted)}
 
 /* ---------- días ---------- */
-.day{scroll-margin-top:12px}
-.day-hero{position:relative;margin-top:34px;min-height:190px;padding:22px 20px;display:flex;flex-direction:column;justify-content:flex-end;color:var(--cream);border-radius:24px;overflow:hidden;
+.day-hero{position:relative;margin-top:16px;min-height:240px;padding:22px 20px;display:flex;flex-direction:column;justify-content:flex-end;color:var(--cream);border-radius:24px;overflow:hidden;
   background:radial-gradient(circle at 85% 22%,rgba(205,182,142,.5) 0 52px,transparent 53px),linear-gradient(160deg,var(--olive),var(--forest))}
-.day:nth-of-type(even) .day-hero{background:radial-gradient(circle at 15% 25%,rgba(245,215,160,.35) 0 48px,transparent 49px),linear-gradient(160deg,var(--cafe),var(--cafe-d))}
+.day.alt .day-hero{background:radial-gradient(circle at 15% 25%,rgba(245,215,160,.35) 0 48px,transparent 49px),linear-gradient(160deg,var(--cafe),var(--cafe-d))}
 .day-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .day-hero.has-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(30,26,20,.72))}
 .day-hero>*:not(img){position:relative;z-index:1}
@@ -108,7 +108,45 @@ img{display:block;max-width:100%}
 .act-body>a{display:inline-block;margin-top:8px;font-size:.8rem;color:var(--cafe);text-decoration:none;border-bottom:1px solid var(--line)}
 .empty{text-align:center;padding:24px 16px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);font-size:.88rem}
 .empty b{display:block;font-family:var(--serif);font-style:italic;font-weight:500;font-size:1.35rem;color:var(--olive);margin-bottom:4px}
-.end{text-align:center;margin:48px 0 0;font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--olive)}
+.end{text-align:center;margin:40px 0 0;font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--olive)}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:34px}
+.pager button{flex:1;border:1px solid var(--line);background:var(--paper);border-radius:14px;padding:12px 14px;color:var(--forest);text-align:left;font-size:.85rem}
+.pager button.nx{text-align:right}
+.pager button small{display:block;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pager button b{font-family:var(--serif);font-weight:600;font-size:1.1rem}
+.pager .sp{flex:1}
+.daylist{list-style:none;display:grid;gap:8px}
+.daylist button{width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:10px 14px;color:var(--ink)}
+.daylist .n{flex:0 0 42px;height:42px;border-radius:50%;background:var(--forest);color:var(--cream);display:grid;place-items:center;font-family:var(--serif);font-size:1.25rem;font-weight:600}
+.daylist .tx b{display:block;font-weight:400}
+.daylist .tx small{color:var(--muted)}
+.hint{text-align:center;color:var(--muted);font-size:.8rem;margin:22px 0 0;line-height:1.5}
+
+/* ---------- morph entre pantallas ---------- */
+.arch,.day-hero{view-transition-name:hero}
+.arch h1,.day-title{view-transition-name:title}
+.eyebrow,.day-num{view-transition-name:kicker}
+.vbody{view-transition-name:vbody}
+.dial{view-transition-name:dial}
+.bubble{view-transition-name:bubble}
+::view-transition-old(root),::view-transition-new(root){animation:none}
+::view-transition-old(dial),::view-transition-old(bubble){display:none}
+::view-transition-new(dial),::view-transition-new(bubble){animation:none}
+::view-transition-group(hero),::view-transition-group(title),::view-transition-group(kicker){animation-duration:.55s;animation-timing-function:cubic-bezier(.2,.85,.25,1)}
+::view-transition-old(hero),::view-transition-new(hero){height:100%;object-fit:cover;animation-duration:.45s}
+::view-transition-old(vbody){animation:vt-out .26s ease both}
+::view-transition-new(vbody){animation:vt-in .48s cubic-bezier(.2,.85,.25,1) .07s both}
+html[data-dir=back]::view-transition-old(vbody){animation-name:vt-out-back}
+html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
+@keyframes vt-out{to{opacity:0;transform:translateY(-22px) scale(.98);filter:blur(4px)}}
+@keyframes vt-in{from{opacity:0;transform:translateY(42px) scale(.98);filter:blur(6px)}}
+@keyframes vt-out-back{to{opacity:0;transform:translateY(22px) scale(.98);filter:blur(4px)}}
+@keyframes vt-in-back{from{opacity:0;transform:translateY(-42px) scale(.98);filter:blur(6px)}}
+@keyframes pop{from{opacity:.4;transform:scale(.96)}}
+.page.enter-fwd .vbody{animation:vt-in .45s cubic-bezier(.2,.85,.25,1) both}
+.page.enter-back .vbody{animation:vt-in-back .45s cubic-bezier(.2,.85,.25,1) both}
+.page.enter-fwd .arch,.page.enter-fwd .day-hero,.page.enter-back .arch,.page.enter-back .day-hero{animation:pop .4s ease both}
+.dial-rail.snap .dmark,.dial-rail.snap .dtick{transition:transform .3s cubic-bezier(.2,.85,.25,1),opacity .3s}
 
 /* votaciones */
 .poll{margin-top:10px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px}
@@ -189,7 +227,7 @@ img{display:block;max-width:100%}
 </head>
 <body>
 
-<main id="page" class="page" aria-live="polite"></main>
+<div id="stage" class="stage"><main id="page" class="page" aria-live="polite"></main></div>
 
 <nav id="dial" class="dial" aria-label="Rueda de fechas: desliza para moverte entre días">
   <div id="rail" class="dial-rail"></div>
@@ -233,7 +271,7 @@ const AIRPORTS = {
   CUN:{ city:'Cancún', name:'Aeropuerto Internacional de Cancún' }
 };
 const $ = s => document.querySelector(s);
-const page = $('#page'), dial = $('#dial'), rail = $('#rail'), bubble = $('#bubble'), scrim = $('#scrim');
+const stage = $('#stage'), page = $('#page'), dial = $('#dial'), rail = $('#rail'), bubble = $('#bubble'), scrim = $('#scrim');
 const editor = $('#editor'), edBody = $('#edBody');
 let state, fileData, edTab = 'days', edDay = 0;
 const openFolds = new Set();
@@ -417,8 +455,14 @@ function intro(){
       <p class="dates">${esc(range)}</p>
       <span class="count">${esc(countdown())}</span>
     </header>
+    <div class="vbody">
     ${state.flights.length ? `<h2 class="sec">Vuelos</h2>${legs}` : ''}
     ${state.hotels.length ? `<h2 class="sec">Hospedaje</h2>${state.hotels.map((h,i) => hotelRow(h,'top',i)).join('')}` : ''}
+    <h2 class="sec">Los días</h2>
+    <ul class="daylist">${state.days.map((d,i) => `<li><button data-go="${i+1}"><span class="n">${d.date ? asDate(d.date).getDate() : i+1}</span><span class="tx"><b>${esc(d.title || 'Día ' + (i+1))}</b><small>Día ${i+1} · ${esc(fmt(d.date,{weekday:'long',day:'numeric',month:'long'}))}</small></span></button></li>`).join('')}</ul>
+    <p class="hint">Gira la rueda de la derecha o desliza de lado para cambiar de día ✦</p>
+    ${pager(0)}
+    </div>
   </section>`;
 }
 
@@ -438,37 +482,49 @@ function daySection(d, i){
       ${map && !a.poll ? `<a href="${esc(map)}" target="_blank" rel="noopener">Ver en el mapa ↗</a>` : ''}
     </div></li>`;
   }).join('');
-  return `<section class="day" id="s${i+1}" data-stop="${i+1}">
+  return `<section class="day ${i % 2 ? 'alt' : ''}" id="s${i+1}" data-stop="${i+1}">
     <header class="day-hero ${cover ? 'has-img' : ''}">
       ${cover ? `<img src="${esc(cover)}" alt="">` : ''}
       <span class="day-num">Día ${i+1}</span>
       <p class="day-date">${esc(fmt(d.date,{weekday:'long',day:'numeric',month:'long'}))}</p>
       <h2 class="day-title">${esc(d.title || '')}</h2>
     </header>
-    <div class="day-inner">
+    <div class="day-inner vbody">
       ${flights.length ? `<h3 class="sec">Vuelos del día</h3>${flights.map(f => flightRow(f,'d' + i)).join('')}` : ''}
       ${hotels.length ? `<h3 class="sec">Hospedaje</h3>${hotels.map(([h,k]) => hotelRow(h,'d' + i,k)).join('')}` : ''}
       <h3 class="sec">Actividades</h3>
       ${acts ? `<ol class="timeline">${acts}</ol>` : `<div class="empty"><b>Día libre… por ahora</b>Agrega actividades desde el menú de edición.</div>`}
+      ${i === state.days.length - 1 ? '<p class="end">¡Buen viaje! ✦</p>' : ''}
+      ${pager(i + 1)}
     </div>
   </section>`;
 }
 
+function pager(i){
+  const lbl = k => k === 0 ? 'Inicio' : `Día ${k} · ${fmt(state.days[k-1]?.date,{weekday:'short',day:'numeric'})}`;
+  const n = state.days.length;
+  return `<nav class="pager">${i > 0 ? `<button data-go="${i-1}"><small>← Anterior</small><b>${esc(lbl(i-1))}</b></button>` : '<span class="sp"></span>'}${i < n ? `<button class="nx" data-go="${i+1}"><small>Siguiente →</small><b>${esc(lbl(i+1))}</b></button>` : '<span class="sp"></span>'}</nav>`;
+}
+function renderView(reset){
+  const st = stage.scrollTop;
+  page.innerHTML = cur === 0 ? intro() : daySection(state.days[cur - 1], cur - 1);
+  stage.scrollTop = reset ? 0 : st;
+}
 function renderAll(){
-  page.innerHTML = intro() + state.days.map(daySection).join('') + `<p class="end">¡Buen viaje! ✦</p>`;
-  buildDial(); measure(); syncFromScroll();
+  cur = clamp(cur, 0, stopCount() - 1);
+  renderView(false); buildDial(); pos = cur; paintDial();
 }
 
 page.addEventListener('toggle', e => {
   const k = e.target.dataset?.key; if (!k) return;
   e.target.open ? openFolds.add(k) : openFolds.delete(k);
-  measure();
 }, true);
 
-/* ---------- rueda de fechas ---------- */
+/* ---------- rueda de fechas + cambio de pantalla con morph ---------- */
 const GAP = 48;               // px entre fechas en la rueda
-let stopsY = [], pos = 0, dragging = false, lastTick = -1, bubbleT;
+let cur = 0, pos = 0, dragging = false, bubbleT, vt, lastWheel = 0;
 const stopCount = () => state.days.length + 1;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function buildDial(){
   const n = stopCount(); let h = '';
@@ -492,24 +548,6 @@ function paintDial(){
     el.style.opacity = Math.max(0, 1 - ad * .2);
   });
 }
-function measure(){
-  const max = document.documentElement.scrollHeight - innerHeight;
-  stopsY = [...page.querySelectorAll('[data-stop]')].map((s,i) => i === 0 ? 0 : Math.min(max, s.getBoundingClientRect().top + scrollY - 12));
-}
-function posFromScroll(y){
-  const n = stopsY.length; if (n < 2) return 0;
-  if (y >= stopsY[n - 1] - 1) return n - 1;
-  for (let i = 0; i < n - 1; i++){
-    const a = stopsY[i], b = stopsY[i + 1];
-    if (y < b) return b > a ? i + clamp((y - a) / (b - a), 0, 1) : i;
-  }
-  return n - 1;
-}
-function yFromPos(p){
-  const i = Math.floor(p), f = p - i;
-  const a = stopsY[i] ?? 0, b = stopsY[i + 1] ?? a;
-  return a + (b - a) * f;
-}
 function showBubble(i, stay){
   const d = state.days[i - 1];
   bubble.innerHTML = i === 0
@@ -519,75 +557,84 @@ function showBubble(i, stay){
   clearTimeout(bubbleT);
   if (!stay) bubbleT = setTimeout(() => bubble.classList.remove('on'), 900);
 }
-function tick(i){
-  if (i === lastTick) return;
-  lastTick = i;
-  if (dragging && navigator.vibrate) navigator.vibrate(6);
+function snapDial(){
+  pos = cur;
+  rail.classList.add('snap'); paintDial();
+  setTimeout(() => rail.classList.remove('snap'), 320);
 }
-function syncFromScroll(){
-  if (dragging) return;
-  pos = posFromScroll(scrollY);
-  paintDial();
-}
-let raf;
-addEventListener('scroll', () => {
-  cancelAnimationFrame(raf);
-  raf = requestAnimationFrame(() => {
-    if (dragging) return;
-    const prev = Math.round(pos);
-    syncFromScroll();
-    if (Math.round(pos) !== prev) showBubble(Math.round(pos));
-  });
-}, { passive:true });
-addEventListener('resize', () => { measure(); syncFromScroll(); });
-addEventListener('load', () => { measure(); syncFromScroll(); });
 
-function goTo(i){
+function show(i){
   i = clamp(i, 0, stopCount() - 1);
-  measure();
-  scrollTo({ top: stopsY[i], behavior:'smooth' });
-  showBubble(i);
+  if (i === cur){ if (!dragging) snapDial(); return; }
+  const dir = i > cur ? 'fwd' : 'back';
+  document.documentElement.dataset.dir = dir;
+  cur = i;
+  if (document.startViewTransition && !reduceMotion){
+    try { vt && vt.skipTransition(); } catch(e) {}
+    vt = document.startViewTransition(() => renderView(true));
+    vt.finished.finally(() => { vt = null; });
+  } else {
+    renderView(true);
+    if (!reduceMotion){ page.classList.remove('enter-fwd','enter-back'); void page.offsetWidth; page.classList.add('enter-' + dir); }
+  }
+  if (!dragging) snapDial();
+  if (navigator.vibrate) navigator.vibrate(6);
+  showBubble(i, dragging);
 }
+
 let startY = 0, startPos = 0, moved = 0;
 dial.addEventListener('pointerdown', e => {
-  measure();
-  dragging = true; moved = 0; startY = e.clientY; startPos = pos; lastTick = Math.round(pos);
+  dragging = true; moved = 0; startY = e.clientY; startPos = pos;
   dial.setPointerCapture(e.pointerId); dial.classList.add('active');
-  document.documentElement.style.scrollBehavior = 'auto';
+  showBubble(cur, true);
 });
 dial.addEventListener('pointermove', e => {
   if (!dragging) return;
   const dy = e.clientY - startY; moved = Math.max(moved, Math.abs(dy));
+  if (moved < 4) return;
   pos = clamp(startPos - dy / GAP, 0, stopCount() - 1);
   paintDial();
-  scrollTo(0, yFromPos(pos));
-  const r = Math.round(pos); tick(r); showBubble(r, true);
+  const r = Math.round(pos);
+  if (r !== cur) show(r);
 });
 function endDrag(e){
   if (!dragging) return;
   dragging = false; dial.classList.remove('active');
-  document.documentElement.style.scrollBehavior = '';
   if (moved < 6){
-    const m = e.target.closest?.('.dmark') || document.elementFromPoint(e.clientX, e.clientY)?.closest('.dmark');
-    if (m) return goTo(+m.dataset.i);
-    // tocar arriba o abajo del centro avanza o retrocede
+    const m = document.elementFromPoint(e.clientX, e.clientY)?.closest('.dmark');
+    if (m && +m.dataset.i !== cur) return show(+m.dataset.i);
     const r = dial.getBoundingClientRect();
-    return goTo(Math.round(pos) + (e.clientY < r.top + r.height / 2 ? -1 : 1));
+    if (!m) return show(cur + (e.clientY < r.top + r.height / 2 ? -1 : 1));
   }
-  goTo(Math.round(pos));
+  snapDial(); showBubble(cur);
 }
 dial.addEventListener('pointerup', endDrag);
 dial.addEventListener('pointercancel', endDrag);
-dial.addEventListener('wheel', e => { e.preventDefault(); goTo(Math.round(pos) + Math.sign(e.deltaY)); }, { passive:false });
+dial.addEventListener('wheel', e => {
+  e.preventDefault();
+  const now = Date.now(); if (now - lastWheel < 280) return; lastWheel = now;
+  show(cur + Math.sign(e.deltaY));
+}, { passive:false });
+addEventListener('resize', paintDial);
+
+/* deslizar de lado sobre la pantalla también cambia de día */
+let sx = null, sy = 0, st0 = 0;
+stage.addEventListener('touchstart', e => { const t = e.touches[0]; sx = t.clientX; sy = t.clientY; st0 = Date.now(); }, { passive:true });
+stage.addEventListener('touchend', e => {
+  if (sx === null) return;
+  const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; sx = null;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6 && Date.now() - st0 < 700) show(cur + (dx < 0 ? 1 : -1));
+}, { passive:true });
 
 document.addEventListener('keydown', e => {
   if (editor.classList.contains('open') || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
-  if (e.key === 'ArrowDown' && e.altKey || e.key === 'PageDown'){ e.preventDefault(); goTo(Math.round(pos) + 1); }
-  if (e.key === 'ArrowUp' && e.altKey || e.key === 'PageUp'){ e.preventDefault(); goTo(Math.round(pos) - 1); }
+  if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); show(cur + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); show(cur - 1); }
   if (e.key === 'E' && e.shiftKey) openEditor();
 });
 
 page.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]'); if (g) return show(+g.dataset.go);
   const v = e.target.closest('[data-vote]'); if (v) sendVote(v.dataset.vote, v.dataset.opt);
 });
 page.addEventListener('submit', e => {
@@ -605,7 +652,7 @@ page.addEventListener('contextmenu', e => { if (e.target.closest('#logo')) e.pre
 scrim.onclick = () => closeEditor();
 
 function openEditor(){
-  edDay = clamp(Math.round(pos) - 1, 0, Math.max(0, state.days.length - 1));
+  edDay = clamp(cur - 1, 0, Math.max(0, state.days.length - 1));
   renderEditor(); setStatus();
   editor.classList.add('open'); editor.setAttribute('aria-hidden','false'); scrim.classList.add('on');
   if (navigator.vibrate) navigator.vibrate(15);
@@ -741,7 +788,7 @@ edBody.addEventListener('input', e => {
   setPath(state, p, v); changed(false);
 });
 edBody.addEventListener('change', async e => {
-  if (e.target.id === 'edDaySel'){ edDay = +e.target.value; renderEditor(); goTo(edDay + 1); return; }
+  if (e.target.id === 'edDaySel'){ edDay = +e.target.value; renderEditor(); show(edDay + 1); return; }
   if (e.target.tagName === 'SELECT' && e.target.dataset.path){ changed(true); return; }
   if (e.target.dataset.path === 'votesUrl'){ state.votesUrl = e.target.value.trim(); changed(true); loadVotes(); return; }
   const up = e.target.dataset.upload;
