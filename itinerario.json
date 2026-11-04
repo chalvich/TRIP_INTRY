@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-04T14:15:00Z",
+  "updated": "2026-11-04T14:35:00Z",
   "votesUrl": "https://script.google.com/macros/s/AKfycbx-zbi_wU8cJRzmNOs6fYfeYU1_t0H5ay3Q--s5Br-Vvka2bqwPO4uExU_WZkyKAoDkkg/exec",
   "trip": {
     "title": "Puerto Rico",
@@ -10,9 +10,12 @@
   "flights": [
     {
       "code": "AV0045",
+      "airline": "Avianca",
       "leg": "ida",
       "from": "MEX",
       "to": "BOG",
+      "depTerm": "1",
+      "arrTerm": "1",
       "date": "2026-11-18",
       "dep": "",
       "arr": "",
@@ -21,9 +24,12 @@
     },
     {
       "code": "AV0258",
+      "airline": "Avianca",
       "leg": "ida",
       "from": "BOG",
       "to": "SJU",
+      "depTerm": "1",
+      "arrTerm": "D",
       "date": "2026-11-18",
       "dep": "",
       "arr": "",
@@ -32,9 +38,12 @@
     },
     {
       "code": "AV0259",
+      "airline": "Avianca",
       "leg": "regreso",
       "from": "SJU",
       "to": "BOG",
+      "depTerm": "D",
+      "arrTerm": "1",
       "date": "2026-11-24",
       "dep": "",
       "arr": "",
@@ -43,9 +52,12 @@
     },
     {
       "code": "AV0044",
+      "airline": "Avianca",
       "leg": "regreso",
       "from": "BOG",
       "to": "MEX",
+      "depTerm": "1",
+      "arrTerm": "1",
       "date": "2026-11-24",
       "dep": "",
       "arr": "",
