@@ -15,7 +15,7 @@
   --cafe:#7b5236; --cafe-d:#4b3527; --terra:#b26f47;
   --ink:#2a251f; --muted:#7f7568;
   --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost',system-ui,sans-serif;
-  --dial-w:46px;
+  --dial-w:34px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -23,22 +23,24 @@ body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weigh
 button{font:inherit;cursor:pointer}
 img{display:block;max-width:100%}
 .stage{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-.page{max-width:600px;min-height:100%;margin:0 auto;padding:0 calc(var(--dial-w) + 12px) 60px 18px}
-@media (min-width:700px){.page{padding-left:24px;padding-right:24px}}
+.page{max-width:600px;min-height:100%;margin:0 auto;padding:0 18px 60px}
+.head{position:sticky;top:0;z-index:5;background:var(--cream);padding-top:12px;margin:0 -4px;padding-left:4px;padding-right:4px}
+.head::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px;background:linear-gradient(var(--cream),rgba(245,239,228,0));pointer-events:none}
 
 /* ---------- portada ---------- */
-.arch{position:relative;margin:16px 0 8px;padding:52px 22px 30px;text-align:center;color:var(--cream);
-  border-radius:300px 300px 26px 26px;overflow:hidden;
-  background:radial-gradient(circle at 50% 26%,rgba(245,215,160,.55) 0 54px,transparent 55px),linear-gradient(180deg,#cdb68e 0%,#a4ae8e 46%,#5f6b48 78%,#2e3a29 100%)}
+.arch{position:relative;height:20vh;min-height:140px;margin:0;padding:12px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--cream);
+  border-radius:90px 90px 22px 22px;overflow:hidden;
+  background:radial-gradient(circle at 50% 30%,rgba(245,215,160,.5) 0 28px,transparent 29px),linear-gradient(180deg,#cdb68e 0%,#a4ae8e 46%,#5f6b48 78%,#2e3a29 100%)}
 .arch::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 2px,transparent 2px 9px);pointer-events:none}
-.logo{width:62px;height:62px;border:0;background:none;color:var(--cream);margin:0 auto 14px;display:block;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;position:relative;z-index:1}
+.logo{width:34px;height:34px;flex:0 0 auto;border:0;background:none;color:var(--cream);margin:0 auto 4px;display:block;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;position:relative;z-index:1}
 .logo svg{width:100%;height:100%}
 .arch>*{position:relative;z-index:1}
-.eyebrow{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;opacity:.9}
-.arch h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(3rem,14vw,4.4rem);line-height:.95;margin:8px 0 6px}
+.eyebrow{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;opacity:.9}
+.arch h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(2rem,9vw,2.8rem);line-height:1;margin:3px 0 6px}
+.arch .mrow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
 .arch .sub{font-family:var(--serif);font-size:1.2rem;opacity:.92}
-.arch .dates{margin-top:18px;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase}
-.count{display:inline-block;margin-top:12px;padding:6px 15px;border:1px solid rgba(245,239,228,.55);border-radius:99px;font-size:.82rem}
+.arch .dates{font-size:.64rem;letter-spacing:.16em;text-transform:uppercase}
+.count{display:inline-block;padding:3px 10px;border:1px solid rgba(245,239,228,.55);border-radius:99px;font-size:.7rem}
 
 .sec{display:flex;align-items:center;gap:12px;margin:28px 0 12px;font-weight:500;font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--cafe)}
 .sec::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -83,15 +85,15 @@ img{display:block;max-width:100%}
 .fold-body p.muted{color:var(--muted)}
 
 /* ---------- días ---------- */
-.day-hero{position:relative;margin-top:16px;min-height:240px;padding:22px 20px;display:flex;flex-direction:column;justify-content:flex-end;color:var(--cream);border-radius:24px;overflow:hidden;
-  background:radial-gradient(circle at 85% 22%,rgba(205,182,142,.5) 0 52px,transparent 53px),linear-gradient(160deg,var(--olive),var(--forest))}
-.day.alt .day-hero{background:radial-gradient(circle at 15% 25%,rgba(245,215,160,.35) 0 48px,transparent 49px),linear-gradient(160deg,var(--cafe),var(--cafe-d))}
+.day-hero{position:relative;height:20vh;min-height:140px;padding:14px 18px;display:flex;flex-direction:column;justify-content:flex-end;color:var(--cream);border-radius:22px;overflow:hidden;
+  background:radial-gradient(circle at 88% 26%,rgba(205,182,142,.5) 0 36px,transparent 37px),linear-gradient(160deg,var(--olive),var(--forest))}
+.day.alt .day-hero{background:radial-gradient(circle at 12% 28%,rgba(245,215,160,.35) 0 32px,transparent 33px),linear-gradient(160deg,var(--cafe),var(--cafe-d))}
 .day-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .day-hero.has-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(30,26,20,.72))}
 .day-hero>*:not(img){position:relative;z-index:1}
-.day-num{font-family:var(--serif);font-style:italic;font-size:1.2rem;opacity:.9}
-.day-date{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;margin-top:3px}
-.day-title{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,9vw,2.7rem);line-height:1;margin-top:8px}
+.day-num{font-family:var(--serif);font-style:italic;font-size:1.05rem;opacity:.9}
+.day-date{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;margin-top:3px}
+.day-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.7rem,7.5vw,2.3rem);line-height:1;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .day-inner{padding:0 2px}
 .day-inner .sec{margin-top:20px}
 
@@ -167,20 +169,19 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
 .poll-foot{font-size:.75rem;color:var(--muted);margin-top:6px}
 
 /* ---------- rueda de fechas (derecha) ---------- */
-.dial{position:fixed;right:0;top:50%;transform:translateY(-50%);width:var(--dial-w);height:min(62vh,420px);z-index:30;touch-action:none;user-select:none;-webkit-user-select:none;cursor:ns-resize;
-  background:rgba(46,58,41,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:24px 0 0 24px;box-shadow:-6px 0 24px rgba(46,58,41,.18);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);transition:width .25s ease}
-.dial.active{width:calc(var(--dial-w) + 10px)}
+.dial{position:fixed;right:0;top:50%;transform:translateY(-50%);width:var(--dial-w);height:min(31vh,220px);z-index:30;touch-action:none;user-select:none;-webkit-user-select:none;cursor:ns-resize;
+  background:rgba(251,248,242,.62);border:1px solid rgba(95,107,72,.3);box-shadow:-4px 0 16px rgba(46,58,41,.08);border-right:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:18px 0 0 18px;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);transition:background .25s,width .25s,border-color .25s}
+.dial.active{width:calc(var(--dial-w) + 6px);background:rgba(164,174,142,.82);border-color:rgba(95,107,72,.4)}
 .dial-rail{position:absolute;inset:0;overflow:hidden}
 .dmark,.dtick{position:absolute;left:0;top:0;will-change:transform,opacity}
-.dmark{width:100%;border:0;background:none;color:var(--cream);display:flex;flex-direction:column;align-items:center;padding:0 0 0 6px;pointer-events:auto}
-.dmark b{font-family:var(--serif);font-weight:600;font-size:1.2rem;line-height:1}
-.dmark small{font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
-.dtick{left:26px;width:8px;height:1px;background:rgba(245,239,228,.45)}
-.dial-center{position:absolute;left:0;top:50%;width:5px;height:30px;transform:translateY(-50%);border-radius:0 4px 4px 0;background:var(--terra)}
-.dial-hint{position:absolute;left:50%;transform:translateX(-50%);color:rgba(245,239,228,.5);font-size:.6rem;pointer-events:none}
-.dial-hint.up{top:10px}.dial-hint.down{bottom:10px}
-.bubble{position:fixed;right:calc(var(--dial-w) + 22px);top:50%;transform:translate(10px,-50%);opacity:0;pointer-events:none;z-index:31;background:var(--cream);color:var(--forest);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 10px 30px rgba(46,58,41,.2);transition:opacity .2s,transform .2s;white-space:nowrap;text-align:right}
+.dmark{width:100%;border:0;background:none;color:var(--forest);display:flex;flex-direction:column;align-items:center;padding:0 0 0 3px;pointer-events:auto}
+.dmark b{font-family:var(--serif);font-weight:600;font-size:1rem;line-height:1}
+.dmark small{font-size:.42rem;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.dtick{left:15px;width:6px;height:1px;background:rgba(46,58,41,.35)}
+.dial-center{position:absolute;left:0;top:50%;width:3px;height:18px;transform:translateY(-50%);border-radius:0 3px 3px 0;background:var(--terra)}
+.dial-hint{display:none}
+.bubble{position:fixed;right:calc(var(--dial-w) + 14px);top:50%;transform:translate(10px,-50%);opacity:0;pointer-events:none;z-index:31;background:var(--cream);color:var(--forest);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 10px 30px rgba(46,58,41,.2);transition:opacity .2s,transform .2s;white-space:nowrap;text-align:right}
 .bubble.on{opacity:1;transform:translate(0,-50%)}
 .bubble b{display:block;font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.25rem;line-height:1.1}
 .bubble small{font-size:.72rem;color:var(--muted)}
@@ -258,7 +259,7 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
 </aside>
 
 <!-- Copia de respaldo de los datos (se usa si itinerario.json no carga) -->
-<script id="seed" type="application/json">{"updated": "2026-11-04T14:35:00Z", "votesUrl": "https://script.google.com/macros/s/AKfycbx-zbi_wU8cJRzmNOs6fYfeYU1_t0H5ay3Q--s5Br-Vvka2bqwPO4uExU_WZkyKAoDkkg/exec", "trip": {"title": "Puerto Rico", "subtitle": "Isla del Encanto", "start": "2026-11-18", "end": "2026-11-24"}, "flights": [{"code": "AV0045", "airline": "Avianca", "leg": "ida", "from": "MEX", "to": "BOG", "depTerm": "1", "arrTerm": "1", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0258", "airline": "Avianca", "leg": "ida", "from": "BOG", "to": "SJU", "depTerm": "1", "arrTerm": "D", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a San Juan"}, {"code": "AV0259", "airline": "Avianca", "leg": "regreso", "from": "SJU", "to": "BOG", "depTerm": "D", "arrTerm": "1", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0044", "airline": "Avianca", "leg": "regreso", "from": "BOG", "to": "MEX", "depTerm": "1", "arrTerm": "1", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a CDMX"}], "hotels": [{"name": "Hotel CDMX · salida", "city": "Ciudad de México", "date": "2026-11-18", "status": "pendiente", "note": "Por definir según el horario del AV0045."}, {"name": "Hotel CDMX · regreso", "city": "Ciudad de México", "date": "2026-11-24", "status": "pendiente", "note": "Por definir según la hora de llegada del AV0044."}], "days": [{"date": "2026-11-18", "title": "Rumbo a la isla", "cover": "", "activities": [{"time": "", "title": "Cena de llegada", "place": "San Juan", "note": "Después de aterrizar, vamos directo a cenar.", "map": "", "photo": "", "poll": {"id": "d18-cena", "question": "¿Dónde cenamos?", "allowOther": true, "options": [{"label": "Mensho Puerto Rico", "link": "https://www.instagram.com/mensho_puertorico/"}, {"label": "Laut", "link": "https://www.instagram.com/laut_pr/"}]}}]}, {"date": "2026-11-19", "title": "Jueves en San Juan", "cover": "", "activities": [{"time": "", "title": "Plan del jueves", "place": "", "note": "", "map": "", "photo": "", "poll": {"id": "d19-plan", "question": "¿Qué hacemos el jueves?", "allowOther": true, "options": [{"label": "Comer en La Casita Blanca", "link": "https://www.google.com/maps/search/?api=1&query=La+Casita+Blanca+San+Juan+Puerto+Rico"}, {"label": "Paseo por el Viejo San Juan", "link": "https://www.google.com/maps/search/?api=1&query=Viejo+San+Juan"}, {"label": "Tarde de playa", "link": ""}]}}]}, {"date": "2026-11-20", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-21", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-22", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-23", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-24", "title": "De vuelta a casa", "cover": "", "activities": []}]}</script>
+<script id="seed" type="application/json">{"updated": "2026-11-04T14:50:00Z", "votesUrl": "https://script.google.com/macros/s/AKfycbx-zbi_wU8cJRzmNOs6fYfeYU1_t0H5ay3Q--s5Br-Vvka2bqwPO4uExU_WZkyKAoDkkg/exec", "trip": {"title": "Puerto Rico", "subtitle": "Isla del Encanto", "start": "2026-11-18", "end": "2026-11-24"}, "flights": [{"code": "AV0045", "airline": "Avianca", "leg": "ida", "from": "MEX", "to": "BOG", "depTerm": "1", "arrTerm": "1", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0258", "airline": "Avianca", "leg": "ida", "from": "BOG", "to": "SJU", "depTerm": "1", "arrTerm": "D", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a San Juan"}, {"code": "AV0259", "airline": "Avianca", "leg": "regreso", "from": "SJU", "to": "BOG", "depTerm": "D", "arrTerm": "1", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0044", "airline": "Avianca", "leg": "regreso", "from": "BOG", "to": "MEX", "depTerm": "1", "arrTerm": "1", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a CDMX"}], "hotels": [{"name": "Hotel CDMX · salida", "city": "Ciudad de México", "date": "2026-11-18", "status": "pendiente", "note": "Por definir según el horario del AV0045."}, {"name": "Hospedaje en Vieques", "city": "Vieques", "date": "2026-11-21", "status": "pendiente", "note": "Una noche: sábado 21 al domingo 22."}, {"name": "Hotel CDMX · regreso", "city": "Ciudad de México", "date": "2026-11-24", "status": "pendiente", "note": "Por definir según la hora de llegada del AV0044."}], "days": [{"date": "2026-11-18", "title": "Rumbo a la isla", "cover": "", "activities": [{"time": "", "title": "Cena de llegada", "place": "San Juan", "note": "Después de aterrizar, vamos directo a cenar.", "map": "", "photo": "", "poll": {"id": "d18-cena", "question": "¿Dónde cenamos?", "allowOther": true, "options": [{"label": "Mensho Puerto Rico", "link": "https://www.instagram.com/mensho_puertorico/"}, {"label": "Laut", "link": "https://www.instagram.com/laut_pr/"}]}}]}, {"date": "2026-11-19", "title": "Jueves en San Juan", "cover": "", "activities": [{"time": "", "title": "Plan del jueves", "place": "", "note": "", "map": "", "photo": "", "poll": {"id": "d19-plan", "question": "¿Qué hacemos el jueves?", "allowOther": true, "options": [{"label": "Comer en La Casita Blanca", "link": "https://www.google.com/maps/search/?api=1&query=La+Casita+Blanca+San+Juan+Puerto+Rico"}, {"label": "Paseo por el Viejo San Juan", "link": "https://www.google.com/maps/search/?api=1&query=Viejo+San+Juan"}, {"label": "Tarde de playa", "link": ""}]}}]}, {"date": "2026-11-20", "title": "Noche de LCG", "cover": "", "activities": [{"time": "", "title": "Cena en LCG", "place": "San Juan", "note": "", "map": "", "photo": ""}]}, {"date": "2026-11-21", "title": "Rumbo a Vieques", "cover": "", "activities": [{"time": "", "title": "Salida a Vieques", "place": "Vieques", "note": "Transporte por confirmar.", "map": "", "photo": ""}, {"time": "", "title": "Estadía en Vieques", "place": "Vieques", "note": "", "map": "", "photo": ""}]}, {"date": "2026-11-22", "title": "Regreso de Vieques", "cover": "", "activities": [{"time": "", "title": "Regreso a San Juan", "place": "Vieques", "note": "Los horarios del ferry se publican cada mes en puertoricoferry.com; confirmar antes de elegir.", "map": "", "photo": "", "poll": {"id": "d22-regreso", "question": "¿A qué hora regresamos?", "allowOther": true, "options": [{"label": "Temprano (mañana)", "link": ""}, {"label": "Mediodía", "link": ""}, {"label": "En la tarde", "link": ""}]}}]}, {"date": "2026-11-23", "title": "Kuomo y Toro Verde", "cover": "", "activities": [{"time": "", "title": "Desayuno en Kuomo", "place": "Kuomo Rooftop", "note": "", "map": "https://www.instagram.com/kuomorooftop/", "photo": ""}, {"time": "", "title": "Toro Verde", "place": "Toro Verde Adventure Park, Orocovis", "note": "", "map": "https://www.google.com/maps/search/?api=1&query=Toro+Verde+Adventure+Park+Orocovis", "photo": ""}]}, {"date": "2026-11-24", "title": "De vuelta a casa", "cover": "", "activities": []}]}</script>
 
 <script>
 (() => {
@@ -447,14 +448,12 @@ function intro(){
     return fs.length ? `<p class="leg">${l === 'ida' ? 'Ida' : 'Regreso'}</p>${fs.map(f => flightRow(f,'top')).join('')}` : '';
   }).join('');
   return `<section id="s0" data-stop="0">
-    <header class="arch">
+    <div class="head"><header class="arch">
       <button class="logo" id="logo" aria-label="${esc(t.title)}">${sunSvg}</button>
-      <p class="eyebrow">Itinerario de viaje</p>
+      <p class="eyebrow">Itinerario de viaje${t.subtitle ? ' · ' + esc(t.subtitle) : ''}</p>
       <h1>${esc(t.title)}</h1>
-      ${t.subtitle ? `<p class="sub">${esc(t.subtitle)}</p>` : ''}
-      <p class="dates">${esc(range)}</p>
-      <span class="count">${esc(countdown())}</span>
-    </header>
+      <div class="mrow"><span class="dates">${esc(range)}</span><span class="count">${esc(countdown())}</span></div>
+    </header></div>
     <div class="vbody">
     ${state.flights.length ? `<h2 class="sec">Vuelos</h2>${legs}` : ''}
     ${state.hotels.length ? `<h2 class="sec">Hospedaje</h2>${state.hotels.map((h,i) => hotelRow(h,'top',i)).join('')}` : ''}
@@ -479,16 +478,16 @@ function daySection(d, i){
       ${a.note ? `<p class="note">${esc(a.note)}</p>` : ''}
       ${photo ? `<img src="${esc(photo)}" alt="${esc(a.title)}" loading="lazy">` : ''}
       ${a.poll ? pollHtml(a.poll) : ''}
-      ${map && !a.poll ? `<a href="${esc(map)}" target="_blank" rel="noopener">Ver en el mapa ↗</a>` : ''}
+      ${map && !a.poll ? `<a href="${esc(map)}" target="_blank" rel="noopener">${esc(/instagram\.com/i.test(map) ? linkLabel(map) + ' ↗' : 'Ver en el mapa ↗')}</a>` : ''}
     </div></li>`;
   }).join('');
   return `<section class="day ${i % 2 ? 'alt' : ''}" id="s${i+1}" data-stop="${i+1}">
-    <header class="day-hero ${cover ? 'has-img' : ''}">
+    <div class="head"><header class="day-hero ${cover ? 'has-img' : ''}">
       ${cover ? `<img src="${esc(cover)}" alt="">` : ''}
       <span class="day-num">Día ${i+1}</span>
       <p class="day-date">${esc(fmt(d.date,{weekday:'long',day:'numeric',month:'long'}))}</p>
       <h2 class="day-title">${esc(d.title || '')}</h2>
-    </header>
+    </header></div>
     <div class="day-inner vbody">
       ${flights.length ? `<h3 class="sec">Vuelos del día</h3>${flights.map(f => flightRow(f,'d' + i)).join('')}` : ''}
       ${hotels.length ? `<h3 class="sec">Hospedaje</h3>${hotels.map(([h,k]) => hotelRow(h,'d' + i,k)).join('')}` : ''}
@@ -521,7 +520,7 @@ page.addEventListener('toggle', e => {
 }, true);
 
 /* ---------- rueda de fechas + cambio de pantalla con morph ---------- */
-const GAP = 48;               // px entre fechas en la rueda
+const GAP = 30;               // px entre fechas en la rueda
 let cur = 0, pos = 0, dragging = false, bubbleT, vt, lastWheel = 0;
 const stopCount = () => state.days.length + 1;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -542,10 +541,10 @@ function paintDial(){
   const mid = dial.clientHeight / 2;
   rail.querySelectorAll('[data-y]').forEach(el => {
     const d = +el.dataset.y - pos, ad = Math.abs(d);
-    const curve = Math.min(30, ad * ad * 3.2);       // se curva hacia afuera como una rueda
-    const sc = el.classList.contains('dmark') ? Math.max(.6, 1 - ad * .1) : 1;
+    const curve = Math.min(14, ad * ad * 2.2);       // se curva hacia afuera como una rueda
+    const sc = el.classList.contains('dmark') ? Math.max(.65, 1 - ad * .12) : 1;
     el.style.transform = `translate(${curve}px, ${mid + d * GAP}px) translateY(-50%) scale(${sc})`;
-    el.style.opacity = Math.max(0, 1 - ad * .2);
+    el.style.opacity = Math.max(0, 1 - ad * .3);
   });
 }
 function showBubble(i, stay){

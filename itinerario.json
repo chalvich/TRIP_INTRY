@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-04T14:35:00Z",
+  "updated": "2026-11-04T14:50:00Z",
   "votesUrl": "https://script.google.com/macros/s/AKfycbx-zbi_wU8cJRzmNOs6fYfeYU1_t0H5ay3Q--s5Br-Vvka2bqwPO4uExU_WZkyKAoDkkg/exec",
   "trip": {
     "title": "Puerto Rico",
@@ -72,6 +72,13 @@
       "date": "2026-11-18",
       "status": "pendiente",
       "note": "Por definir según el horario del AV0045."
+    },
+    {
+      "name": "Hospedaje en Vieques",
+      "city": "Vieques",
+      "date": "2026-11-21",
+      "status": "pendiente",
+      "note": "Una noche: sábado 21 al domingo 22."
     },
     {
       "name": "Hotel CDMX · regreso",
@@ -148,27 +155,98 @@
     },
     {
       "date": "2026-11-20",
-      "title": "Por planear",
+      "title": "Noche de LCG",
       "cover": "",
-      "activities": []
+      "activities": [
+        {
+          "time": "",
+          "title": "Cena en LCG",
+          "place": "San Juan",
+          "note": "",
+          "map": "",
+          "photo": ""
+        }
+      ]
     },
     {
       "date": "2026-11-21",
-      "title": "Por planear",
+      "title": "Rumbo a Vieques",
       "cover": "",
-      "activities": []
+      "activities": [
+        {
+          "time": "",
+          "title": "Salida a Vieques",
+          "place": "Vieques",
+          "note": "Transporte por confirmar.",
+          "map": "",
+          "photo": ""
+        },
+        {
+          "time": "",
+          "title": "Estadía en Vieques",
+          "place": "Vieques",
+          "note": "",
+          "map": "",
+          "photo": ""
+        }
+      ]
     },
     {
       "date": "2026-11-22",
-      "title": "Por planear",
+      "title": "Regreso de Vieques",
       "cover": "",
-      "activities": []
+      "activities": [
+        {
+          "time": "",
+          "title": "Regreso a San Juan",
+          "place": "Vieques",
+          "note": "Los horarios del ferry se publican cada mes en puertoricoferry.com; confirmar antes de elegir.",
+          "map": "",
+          "photo": "",
+          "poll": {
+            "id": "d22-regreso",
+            "question": "¿A qué hora regresamos?",
+            "allowOther": true,
+            "options": [
+              {
+                "label": "Temprano (mañana)",
+                "link": ""
+              },
+              {
+                "label": "Mediodía",
+                "link": ""
+              },
+              {
+                "label": "En la tarde",
+                "link": ""
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "date": "2026-11-23",
-      "title": "Por planear",
+      "title": "Kuomo y Toro Verde",
       "cover": "",
-      "activities": []
+      "activities": [
+        {
+          "time": "",
+          "title": "Desayuno en Kuomo",
+          "place": "Kuomo Rooftop",
+          "note": "",
+          "map": "https://www.instagram.com/kuomorooftop/",
+          "photo": ""
+        },
+        {
+          "time": "",
+          "title": "Toro Verde",
+          "place": "Toro Verde Adventure Park, Orocovis",
+          "note": "",
+          "map": "https://www.google.com/maps/search/?api=1&query=Toro+Verde+Adventure+Park+Orocovis",
+          "photo": ""
+        }
+      ]
     },
     {
       "date": "2026-11-24",
