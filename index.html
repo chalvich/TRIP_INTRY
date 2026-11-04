@@ -262,6 +262,33 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
 .chk{display:flex;gap:8px;align-items:center;font-size:.85rem;margin:4px 0 10px}
 .toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-220%);visibility:hidden;background:var(--forest);color:var(--cream);padding:10px 18px;border-radius:99px;font-size:.85rem;z-index:80;transition:transform .3s;max-width:90vw;text-align:center}
 .toast.on{transform:translate(-50%,0);visibility:visible}
+/* ---------- hoja de actividad ---------- */
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:90dvh;background:var(--paper);border-radius:24px 24px 0 0;transform:translateY(105%);transition:transform .35s ease;z-index:62;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.sheet.open{transform:none}
+@media (min-width:760px){.sheet{left:50%;width:480px;margin-left:-240px}}
+.sh-head{position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 20px 12px;border-bottom:1px solid var(--line)}
+.sh-head h3{font-family:var(--serif);font-style:italic;font-size:1.5rem;font-weight:600;color:var(--forest)}
+.cal-btn{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:7px 10px;color:var(--forest);font-size:.85rem;text-transform:capitalize}
+.cal-btn svg{width:16px;height:16px;color:var(--cafe)}
+.cal-btn i{font-style:normal;font-size:.6rem;color:var(--muted)}
+.cal-btn.moved{border-color:var(--terra);background:#fbf3ec}
+.cal-pop{position:absolute;right:16px;top:calc(100% - 4px);width:252px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:0 16px 40px rgba(46,58,41,.2);z-index:3;opacity:0;transform:translateY(-6px) scale(.97);transform-origin:top right;pointer-events:none;transition:opacity .18s,transform .18s}
+.cal-pop.on{opacity:1;transform:none;pointer-events:auto}
+.cal-m{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:var(--forest);margin-bottom:6px}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.cal-g span{font-size:.6rem;color:var(--muted);padding:2px 0}
+.cd{height:30px;border:0;border-radius:9px;background:var(--sand);color:var(--forest);font-weight:500;font-size:.85rem}
+.cd.off{background:none;color:#cfc6b6}
+.cd.orig{box-shadow:inset 0 0 0 1.5px var(--sage)}
+.cd.sel{background:var(--olive);color:var(--cream)}
+.cal-tip{font-size:.7rem;color:var(--muted);margin-top:8px}
+.sh-body{flex:1;overflow-y:auto;padding:14px 20px}
+.sh-foot{flex-shrink:0;display:flex;gap:8px;align-items:center;padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.opt-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:6px}
+.opt-row input{min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 9px;font:inherit;font-size:16px;background:var(--paper);color:var(--ink)}
+.up-state{font-size:.75rem;color:var(--muted)}
+.add-act{width:100%;margin-top:10px;border:1.5px dashed var(--line);background:none;border-radius:16px;padding:12px;color:var(--cafe);font-size:.9rem;font-weight:500}
+.act-edit{margin-top:12px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -294,6 +321,14 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
     <button class="btn danger" id="btnReset">Restaurar del archivo</button>
     <input type="file" id="importFile" accept="application/json,.json" hidden>
   </div>
+</aside>
+
+<aside id="actSheet" class="sheet" aria-hidden="true">
+  <div class="sh-head"><h3 id="shTitle">Nueva actividad</h3>
+    <button class="cal-btn" id="calBtn" aria-label="Elegir día"></button>
+    <div class="cal-pop" id="calPop"></div></div>
+  <div class="sh-body" id="shBody"></div>
+  <div class="sh-foot"><button class="btn danger" id="shDel">Eliminar</button><span style="flex:1"></span><button class="btn" id="shCancel">Cancelar</button><button class="btn main" id="shSave">Guardar</button></div>
 </aside>
 
 <!-- Copia de respaldo de los datos (se usa si itinerario.json no carga) -->
@@ -409,7 +444,7 @@ function pollHtml(poll){
 function normalize(){
   state.trip ||= { title:'Mi viaje', subtitle:'', start:'', end:'' };
   state.flights ||= []; state.hotels ||= []; state.days ||= [];
-  state.days.forEach(d => { d.activities ||= []; });
+  state.days.forEach(d => { d.activities ||= []; d.activities.forEach((a, j) => { a.id ||= `a-${d.date}-${j}`; }); });
 }
 
 /* ---------- carga ---------- */
@@ -426,7 +461,7 @@ async function load(){
   state = newer ? local : clone(fileData);
   normalize(); renderAll();
   if (location.hash === '#editar') openEditor();
-  loadVotes();
+  loadVotes(); loadOnline(true);
 }
 
 /* ---------- vistas ---------- */
@@ -434,6 +469,7 @@ const sunSvg = `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strok
 const ballotSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h16v7H4z"/><path d="M8 13V5h8v8"/><path d="M10 9l1.5 1.5L14 8"/></svg>`;
 const checkSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
 const starSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>`;
+const calSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>`;
 const chev = `<span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>`;
 
 function countdown(){
@@ -530,8 +566,9 @@ function daySection(d, i){
       ${a.poll ? pollHtml(a.poll) : ''}
       ${map && !a.poll ? `<a href="${esc(map)}" target="_blank" rel="noopener">${esc(/instagram\.com/i.test(map) ? linkLabel(map) + ' ↗' : 'Ver en el mapa ↗')}</a>` : ''}
       ${!a.note && !photo && !a.poll && !map ? '<p class="note" style="color:var(--muted)">Sin detalles todavía.</p>' : ''}
+      <div><button class="btn sm ghost act-edit" data-edit="${esc(a.id)}">✏️ Editar o mover</button></div>
     </div>`;
-    return fold(`a-${d.date}-${j}`, 'act-card', summary, body);
+    return fold(`a-${a.id}`, 'act-card', summary, body);
   }).join('');
   return `<section class="day ${i % 2 ? 'alt' : ''}" id="s${i+1}" data-stop="${i+1}">
     <div class="head"><header class="day-hero ${cover ? 'has-img' : ''}">
@@ -544,7 +581,8 @@ function daySection(d, i){
       ${flights.length ? `<h3 class="sec">Vuelos del día</h3>${flights.map(f => flightRow(f,'d' + i)).join('')}` : ''}
       ${hotels.length ? `<h3 class="sec">Hospedaje</h3>${hotels.map(([h,k]) => hotelRow(h,'d' + i,k)).join('')}` : ''}
       <h3 class="sec">Actividades</h3>
-      ${acts ? `<div class="acts">${acts}</div>` : `<div class="empty"><b>Día libre… por ahora</b>Agrega actividades desde el menú de edición.</div>`}
+      ${acts ? `<div class="acts">${acts}</div>` : `<div class="empty"><b>Día libre… por ahora</b>Agrega la primera actividad.</div>`}
+      <button class="add-act" data-add="${esc(d.date)}">+ Agregar actividad</button>
       ${i === state.days.length - 1 ? '<p class="end">¡Buen viaje! ✦</p>' : ''}
       <div class="dock-slot"><span class="pull" aria-hidden="true"></span><nav class="dock" aria-label="Cambiar de día"></nav></div>
     </div>
@@ -731,7 +769,7 @@ stage.addEventListener('touchend', e => {
 }, { passive:true });
 
 document.addEventListener('keydown', e => {
-  if (editor.classList.contains('open') || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+  if (editor.classList.contains('open') || sheet.classList.contains('open') || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
   if (e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); show(cur + 1); }
   if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); show(cur - 1); }
   if (e.key === 'E' && e.shiftKey) openEditor();
@@ -739,6 +777,8 @@ document.addEventListener('keydown', e => {
 
 page.addEventListener('click', e => {
   const g = e.target.closest('[data-go]'); if (g) return show(+g.dataset.go);
+  const ad = e.target.closest('[data-add]'); if (ad) return openSheet(null, ad.dataset.add);
+  const ed = e.target.closest('[data-edit]'); if (ed) return openSheet(ed.dataset.edit);
   const v = e.target.closest('[data-vote]'); if (v) sendVote(v.dataset.vote, v.dataset.opt);
 });
 page.addEventListener('submit', e => {
@@ -746,14 +786,14 @@ page.addEventListener('submit', e => {
   e.preventDefault();
   const val = f.o.value.trim(); if (val) sendVote(f.dataset.other, val, true);
 });
-document.addEventListener('visibilitychange', () => { if (!document.hidden) loadVotes(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden){ loadVotes(); if (!busyEditing()) loadOnline(); } });
 
 /* ---------- menú escondido: mantener presionado el sol ---------- */
 let lp;
 page.addEventListener('pointerdown', e => { if (e.target.closest('#logo')) lp = setTimeout(openEditor, 700); });
 ['pointerup','pointerleave','pointercancel'].forEach(ev => page.addEventListener(ev, () => clearTimeout(lp)));
 page.addEventListener('contextmenu', e => { if (e.target.closest('#logo')) e.preventDefault(); });
-scrim.onclick = () => closeEditor();
+scrim.onclick = () => { closeSheet(); closeEditor(); };
 
 function openEditor(){
   edDay = clamp(cur - 1, 0, Math.max(0, state.days.length - 1));
@@ -776,12 +816,13 @@ function save(){
 }
 function changed(structural){
   clearTimeout(saveT);
-  if (structural){ save(); renderAll(); renderEditor(); }
-  else saveT = setTimeout(() => { save(); renderAll(); }, 250);
+  if (structural){ save(); renderAll(); renderEditor(); scheduleOnline(); }
+  else saveT = setTimeout(() => { save(); renderAll(); scheduleOnline(); }, 250);
 }
 function setStatus(msg, warn){
   const el = $('#edStatus');
   if (msg){ el.textContent = msg; el.classList.toggle('warn', !!warn); return; }
+  if (online){ el.textContent = 'Guardado en línea ✓ · todos ven los cambios al instante.'; el.classList.remove('warn'); return; }
   const dirty = Date.parse(state.updated || 0) > Date.parse(fileData.updated || 0);
   el.textContent = dirty ? 'Cambios guardados en este dispositivo · descarga el JSON y súbelo a GitHub para que se vean en todos lados.' : 'Al día con el archivo publicado.';
   el.classList.toggle('warn', dirty);
@@ -832,10 +873,10 @@ function renderEditor(){
       <div class="grid2">${F('Inicio','trip.start','date')}${F('Fin','trip.end','date')}</div>
       <p class="tip">Las fechas de inicio y fin se usan para la cuenta regresiva. Los días se agregan o quitan en la pestaña Días.</p>
       <h4 class="sec">Votaciones</h4>
-      ${F('URL de la aplicación web (Apps Script)','votesUrl','url','https://script.google.com/macros/s/…/exec')}
+      ${F('URL de la hoja (Apps Script): votos, itinerario y fotos','votesUrl','url','https://script.google.com/macros/s/…/exec')}
       <label class="f"><span>PIN para cerrar votaciones (solo se guarda en este dispositivo)</span><input type="password" id="adminPin" value="${esc(lsGet('tripPR.pin') || '')}" autocomplete="off"></label>
       <div class="row"><button class="btn" data-act="test-votes">Probar conexión</button></div>
-      <p class="tip">La URL sí va en itinerario.json (así todos pueden votar). El PIN nunca se sube.</p>`;
+      <p class="tip">Con la URL conectada, los cambios se guardan en línea y todos los ven. El PIN nunca se sube.</p>`;
   }
   if (edTab === 'flights'){
     h = state.flights.map((f,i) => `<div class="eb">
@@ -895,10 +936,10 @@ edBody.addEventListener('input', e => {
 edBody.addEventListener('change', async e => {
   if (e.target.id === 'edDaySel'){ edDay = +e.target.value; renderEditor(); show(edDay + 1); return; }
   if (e.target.tagName === 'SELECT' && e.target.dataset.path){ changed(true); return; }
-  if (e.target.dataset.path === 'votesUrl'){ state.votesUrl = e.target.value.trim(); changed(true); loadVotes(); return; }
+  if (e.target.dataset.path === 'votesUrl'){ state.votesUrl = e.target.value.trim(); changed(true); loadVotes(); loadOnline(true); return; }
   const up = e.target.dataset.upload;
   if (up && e.target.files[0]){
-    try { setPath(state, up, await compress(e.target.files[0])); changed(true); }
+    try { setStatus('Subiendo foto…'); setPath(state, up, await uploadPhoto(e.target.files[0])); changed(true); }
     catch(err){ setStatus('No se pudo leer esa imagen.', true); }
   }
 });
@@ -951,6 +992,204 @@ function compress(file, max = 1400, q = .78){
   });
 }
 
+/* ---------- itinerario compartido en línea (hoja + Drive) ---------- */
+let serverRev = 0, online = false, saveChain = Promise.resolve(), onlineT;
+const apiGet = q => state.votesUrl + (state.votesUrl.includes('?') ? '&' : '?') + q;
+const busyEditing = () => editor.classList.contains('open') || sheet.classList.contains('open');
+
+async function loadOnline(force){
+  if (!state.votesUrl) return;
+  try {
+    const j = await (await fetch(apiGet('action=data'))).json();
+    if (j.itinerary && Array.isArray(j.itinerary.days)){
+      if (force || j.rev !== serverRev || !online){
+        if (busyEditing() && online) return;              // no interrumpir mientras alguien edita
+        const url = state.votesUrl;
+        state = j.itinerary; state.votesUrl ||= url; normalize();
+        serverRev = j.rev; online = true;
+        lsSet(LS_KEY, JSON.stringify(state));
+        renderAll();
+      }
+    } else if (j.rev !== undefined){
+      serverRev = j.rev || 0; online = true;
+      saveOnline();                                        // primera vez: sube el itinerario actual
+    }
+  } catch(e) { console.warn('Itinerario en línea no disponible', e); }
+}
+function saveOnline(op){
+  if (!state.votesUrl) return;
+  saveChain = saveChain.then(async () => {
+    for (let attempt = 0; attempt < 3; attempt++){
+      try {
+        const j = await api({ action:'save', itinerary: state, baseRev: serverRev });
+        if (j.ok){ serverRev = j.rev; online = true; setStatus(); return; }
+        if (j.error === 'conflict'){
+          // alguien guardó antes: tomamos su versión y volvemos a aplicar nuestro cambio
+          const url = state.votesUrl;
+          state = j.itinerary || state; state.votesUrl ||= url; normalize(); serverRev = j.rev;
+          if (op){ op(state); renderAll(); continue; }
+          renderAll(); toast('Alguien más hizo cambios: se cargó la versión más reciente'); return;
+        }
+        if (j.error === 'accion'){ online = false; return; }   // script viejo: solo se guarda en este celular
+        toast('No se pudo guardar en línea'); return;
+      } catch(e){ toast('Sin conexión: el cambio quedó solo en este celular'); return; }
+    }
+  });
+}
+function scheduleOnline(){ clearTimeout(onlineT); onlineT = setTimeout(() => saveOnline(), 1200); }
+setInterval(() => { if (!document.hidden && !busyEditing()) loadOnline(); }, 45000);
+
+async function uploadPhoto(file){
+  const dataUrl = await compress(file);
+  if (!state.votesUrl) return dataUrl;
+  try {
+    const j = await api({ action:'upload', name: file.name || 'foto.jpg', mime:'image/jpeg', data: dataUrl.split(',')[1] });
+    if (j.ok && j.url) return j.url;
+    if (j.error === 'accion') toast('Actualiza el script para subir fotos a Drive; por ahora queda en este celular');
+  } catch(e) { toast('No se pudo subir la foto; queda en este celular'); }
+  return dataUrl;
+}
+
+/* ---------- hoja para agregar / editar una actividad ---------- */
+const sheet = $('#actSheet'), shBody = $('#shBody'), calBtn = $('#calBtn'), calPop = $('#calPop');
+let draft = null, draftDate = '', draftIsNew = true, origDate = '';
+const newId = () => 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+const sortActs = d => {
+  const k = a => a.time || '99:99';
+  d.activities = d.activities.map((a, i) => [a, i]).sort((x, y) => k(x[0]).localeCompare(k(y[0])) || x[1] - y[1]).map(x => x[0]);
+};
+
+function openSheet(id, date){
+  let found = null;
+  state.days.forEach(d => d.activities.forEach(a => { if (a.id === id) found = [a, d.date]; }));
+  draftIsNew = !found;
+  draft = found ? clone(found[0]) : { id: newId(), time:'', title:'', place:'', note:'', map:'', photo:'' };
+  draftDate = origDate = found ? found[1] : (date || state.days[Math.max(0, cur - 1)]?.date);
+  $('#shTitle').textContent = draftIsNew ? 'Nueva actividad' : 'Editar actividad';
+  $('#shDel').style.visibility = draftIsNew ? 'hidden' : 'visible';
+  renderCalBtn(); calPop.classList.remove('on');
+  renderSheet();
+  sheet.classList.add('open'); sheet.setAttribute('aria-hidden','false'); scrim.classList.add('on');
+  setTimeout(() => { if (draftIsNew) shBody.querySelector('[data-k="title"]')?.focus(); }, 350);
+}
+function closeSheet(){
+  sheet.classList.remove('open'); sheet.setAttribute('aria-hidden','true'); calPop.classList.remove('on');
+  if (!editor.classList.contains('open')) scrim.classList.remove('on');
+  draft = null;
+}
+
+/* mini calendario (arriba a la derecha) para elegir o cambiar el día */
+function renderCalBtn(){
+  calBtn.innerHTML = `${calSvg}<span>${esc(fmt(draftDate,{weekday:'short',day:'numeric'}).replace('.',''))}</span><i>▾</i>`;
+  calBtn.classList.toggle('moved', draftDate !== origDate && !draftIsNew);
+}
+function renderCal(){
+  const dates = state.days.map(d => d.date).filter(Boolean).sort();
+  if (!dates.length){ calPop.innerHTML = ''; return; }
+  const first = asDate(dates[0]), last = asDate(dates[dates.length - 1]);
+  const start = new Date(first); start.setDate(first.getDate() - ((first.getDay() + 6) % 7));   // lunes de esa semana
+  const end = new Date(last); end.setDate(last.getDate() + (6 - (last.getDay() + 6) % 7));
+  let cells = '';
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)){
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const on = dates.includes(iso);
+    cells += `<button class="cd ${on ? '' : 'off'} ${iso === draftDate ? 'sel' : ''} ${iso === origDate && !draftIsNew ? 'orig' : ''}" ${on ? `data-date="${iso}"` : 'disabled'}>${d.getDate()}</button>`;
+  }
+  calPop.innerHTML = `<p class="cal-m">${esc(cap(first.toLocaleDateString('es-MX',{month:'long',year:'numeric'})))}</p>
+    <div class="cal-g">${['L','M','M','J','V','S','D'].map(x => `<span>${x}</span>`).join('')}${cells}</div>
+    <p class="cal-tip">${draftIsNew ? 'Elige el día de la actividad' : 'Toca otro día para mover la actividad'}</p>`;
+}
+calBtn.addEventListener('click', e => { e.stopPropagation(); renderCal(); calPop.classList.toggle('on'); });
+calPop.addEventListener('click', e => {
+  const c = e.target.closest('[data-date]'); if (!c) return;
+  draftDate = c.dataset.date; renderCalBtn(); renderCal();
+  setTimeout(() => calPop.classList.remove('on'), 180);
+  if (navigator.vibrate) navigator.vibrate(6);
+});
+sheet.addEventListener('pointerdown', e => { if (!e.target.closest('#calPop, #calBtn')) calPop.classList.remove('on'); });
+
+function renderSheet(){
+  const a = draft, p = a.poll;
+  const fi = (label, k, type = 'text', ph = '') => `<label class="f"><span>${label}</span><input type="${type}" data-k="${k}" value="${esc(a[k] || '')}" placeholder="${esc(ph)}"></label>`;
+  const photo = safeUrl(a.photo);
+  shBody.innerHTML = `
+    <div class="grid2" style="grid-template-columns:136px 1fr">${fi('Hora','time','time')}${fi('Actividad','title','text','Cena, playa, tour…')}</div>
+    ${fi('Lugar','place','text','Viejo San Juan')}
+    <label class="f"><span>Notas</span><textarea data-k="note" placeholder="Reservación, qué llevar, punto de encuentro…">${esc(a.note || '')}</textarea></label>
+    ${fi('Enlace (mapa o Instagram, opcional)','map','url','https://…')}
+    <div class="f"><span>Foto</span>
+      <div class="thumb">${photo ? `<img src="${esc(photo)}" alt="">` : ''}
+        <label class="btn sm">${photo ? 'Cambiar foto' : 'Elegir foto'}<input type="file" accept="image/*" id="shPhoto" hidden></label>
+        ${photo ? '<button class="btn sm ghost" data-sh="no-photo">Quitar</button>' : ''}
+        <span class="up-state" id="upState"></span></div></div>
+    <label class="chk"><input type="checkbox" data-sh="poll" ${p ? 'checked' : ''}> Hacerla votación</label>
+    ${p ? `<div class="eb">
+      <label class="f"><span>Pregunta</span><input type="text" data-pk="question" value="${esc(p.question || '')}" placeholder="¿Dónde cenamos?"></label>
+      ${(p.options || []).map((o, k) => `<div class="opt-row"><input type="text" data-ok="${k}" data-of="label" value="${esc(o.label || '')}" placeholder="Opción ${k + 1}">
+        <input type="url" data-ok="${k}" data-of="link" value="${esc(o.link || '')}" placeholder="Enlace (opcional)">
+        <button class="btn sm danger" data-sh="del-opt" data-k="${k}" aria-label="Quitar opción">✕</button></div>`).join('')}
+      <div class="row"><button class="btn sm" data-sh="add-opt">+ Opción</button></div>
+      <label class="chk"><input type="checkbox" data-pk="allowOther" ${p.allowOther ? 'checked' : ''}> Permitir proponer otra opción</label>
+    </div>` : ''}
+    <p class="tip">${state.votesUrl ? 'Se guarda en línea: todos ven el cambio al instante.' : 'Sin conexión a la hoja: el cambio queda solo en este celular.'}</p>`;
+}
+shBody.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.k) draft[t.dataset.k] = t.value;
+  if (t.dataset.pk) draft.poll[t.dataset.pk] = t.type === 'checkbox' ? t.checked : t.value;
+  if (t.dataset.ok !== undefined) draft.poll.options[+t.dataset.ok][t.dataset.of] = t.value;
+});
+shBody.addEventListener('change', async e => {
+  const t = e.target;
+  if (t.dataset.sh === 'poll'){
+    draft.poll = t.checked ? (draft.poll || { id: 'p' + Date.now().toString(36), question:'', allowOther:true, options:[{label:'',link:''},{label:'',link:''}] }) : undefined;
+    if (!t.checked) delete draft.poll;
+    renderSheet(); return;
+  }
+  if (t.id === 'shPhoto' && t.files[0]){
+    const st = $('#upState'); st.textContent = 'Subiendo…';
+    try { draft.photo = await uploadPhoto(t.files[0]); renderSheet(); }
+    catch(err){ st.textContent = 'No se pudo leer la foto'; }
+  }
+});
+shBody.addEventListener('click', e => {
+  const b = e.target.closest('[data-sh]'); if (!b || b.type === 'checkbox') return;
+  if (b.dataset.sh === 'no-photo') draft.photo = '';
+  if (b.dataset.sh === 'add-opt') draft.poll.options.push({ label:'', link:'' });
+  if (b.dataset.sh === 'del-opt') draft.poll.options.splice(+b.dataset.k, 1);
+  renderSheet();
+});
+
+function commit(op, msg){
+  op(state);
+  save(); renderAll();
+  saveOnline(op);
+  if (msg) toast(msg);
+}
+$('#shSave').onclick = () => {
+  if (!draft) return;
+  if (!draft.title.trim()) { toast('Ponle nombre a la actividad'); shBody.querySelector('[data-k="title"]')?.focus(); return; }
+  const a = clone(draft), date = draftDate, moved = !draftIsNew && date !== origDate;
+  if (a.poll) a.poll.options = (a.poll.options || []).filter(o => o.label.trim());
+  const op = s => {
+    s.days.forEach(d => { d.activities = (d.activities || []).filter(x => x.id !== a.id); });
+    const day = s.days.find(d => d.date === date) || s.days[0];
+    day.activities.push(clone(a)); sortActs(day);
+  };
+  closeSheet();
+  openFolds.add('a-' + a.id);
+  commit(op, moved ? `Movida al ${fmt(date,{weekday:'long',day:'numeric'})} ✓` : 'Guardado ✓');
+  const idx = state.days.findIndex(d => d.date === date);
+  if (idx >= 0 && idx + 1 !== cur) show(idx + 1);
+};
+$('#shDel').onclick = () => {
+  if (!draft || !confirm('¿Eliminar esta actividad?')) return;
+  const id = draft.id;
+  closeSheet();
+  commit(s => s.days.forEach(d => { d.activities = (d.activities || []).filter(x => x.id !== id); }), 'Actividad eliminada');
+};
+$('#shCancel').onclick = closeSheet;
+
 /* ---------- exportar / importar / restaurar ---------- */
 $('#btnExport').onclick = () => {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type:'application/json' });
@@ -968,7 +1207,7 @@ $('#importFile').onchange = async e => {
 $('#btnReset').onclick = () => {
   if (!confirm('Se borrarán los cambios guardados en este dispositivo y se cargará itinerario.json. ¿Continuar?')) return;
   try { localStorage.removeItem(LS_KEY); } catch(e) {}
-  state = clone(fileData); normalize(); renderAll(); renderEditor(); setStatus();
+  state = clone(fileData); normalize(); renderAll(); renderEditor(); setStatus(); loadOnline(true);
 };
 
 /* ---------- cuadrícula de referencia: abre la página con #grid ---------- */
