@@ -103,6 +103,26 @@ img{display:block;max-width:100%}
 .empty{text-align:center;padding:30px 20px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);font-size:.9rem}
 .empty b{display:block;font-family:var(--serif);font-style:italic;font-weight:500;font-size:1.4rem;color:var(--olive);margin-bottom:4px}
 
+/* votaciones */
+.poll{margin-top:10px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px}
+.poll-q{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--cafe);margin-bottom:9px}
+.opt{position:relative;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:12px;margin-bottom:6px;overflow:hidden;padding-right:10px}
+.opt .bar{position:absolute;left:0;top:0;bottom:0;background:#e3e7d6;transition:width .5s ease}
+.opt>*:not(.bar){position:relative}
+.opt .lbl{flex:1;text-align:left;border:0;background:none;padding:11px 0 11px 12px;color:var(--ink);font-size:.95rem;font-weight:400}
+.opt .lbl:disabled{cursor:default}
+.opt a{font-size:.75rem;color:var(--cafe);text-decoration:none;white-space:nowrap;margin-top:0;border:0}
+.opt .pct{font-size:.75rem;color:var(--muted);white-space:nowrap}
+.opt.mine{border-color:var(--olive);box-shadow:inset 0 0 0 1px var(--olive)}
+.opt.mine .lbl{font-weight:500;color:var(--forest)}
+.opt.win .bar{background:#dccdb1}
+.poll-other{display:flex;gap:6px;margin-top:8px}
+.poll-other input{flex:1;min-width:0;border:1px dashed var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.poll-foot{font-size:.75rem;color:var(--muted);margin-top:6px}
+.chk{display:flex;gap:8px;align-items:center;font-size:.85rem;margin:4px 0 10px}
+.toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-150%);background:var(--forest);color:var(--cream);padding:10px 18px;border-radius:99px;font-size:.85rem;z-index:80;transition:transform .3s;max-width:90vw;text-align:center}
+.toast.on{transform:translate(-50%,0)}
+
 /* ---------- dock + abanico ---------- */
 .dock{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:rgba(46,58,41,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:7px;border-radius:99px;z-index:45;box-shadow:0 10px 30px rgba(46,58,41,.35)}
 .dock-btn{width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:var(--cream);font-size:1.6rem;line-height:1}
@@ -159,6 +179,7 @@ img{display:block;max-width:100%}
 <main id="track" class="track" aria-live="polite"></main>
 
 <div id="scrim" class="scrim"></div>
+<div id="toast" class="toast" role="status"></div>
 <div id="fan" class="fan" aria-hidden="true"></div>
 
 <nav class="dock" aria-label="Navegación de días">
@@ -212,6 +233,80 @@ function setPath(obj, path, val){
 }
 function getPath(obj, path){ return path.split('.').reduce((o, k) => o?.[k], obj); }
 
+/* ---------- votaciones ---------- */
+const lsGet = k => { try { return localStorage.getItem(k); } catch(e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} };
+let voter = lsGet('tripPR.voter');
+if (!voter){ voter = 'v' + Math.random().toString(36).slice(2, 10); lsSet('tripPR.voter', voter); }
+let votes = { polls:{}, mine:{} };
+let tt;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2600); }
+const linkLabel = u => { const m = u.match(/instagram\.com\/([\w.]+)/i); return m ? '@' + m[1] : /maps|goo\.gl/i.test(u) ? 'Mapa ↗' : 'Ver ↗'; };
+
+async function api(body){
+  const r = await fetch(state.votesUrl, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify({ ...body, voter }) });
+  return r.json();
+}
+async function loadVotes(){
+  if (!state.votesUrl) return;
+  try {
+    const u = state.votesUrl + (state.votesUrl.includes('?') ? '&' : '?') + 'voter=' + encodeURIComponent(voter);
+    const j = await (await fetch(u)).json();
+    if (j.polls){ votes = j; renderAll(); }
+  } catch(e) { console.warn('Votaciones no disponibles', e); }
+}
+async function sendVote(id, option, other = false){
+  option = option.trim(); if (!state.votesUrl || !option) return;
+  const p = votes.polls[id] ||= { counts:{}, closed:false };
+  if (p.closed) return toast('Esa votación ya está cerrada');
+  const prev = votes.mine[id]; if (prev === option) return;
+  if (prev) p.counts[prev] = Math.max(0, (p.counts[prev] || 1) - 1);
+  p.counts[option] = (p.counts[option] || 0) + 1; votes.mine[id] = option;
+  renderAll(); toast(prev ? 'Voto cambiado ✓' : 'Voto enviado ✓');
+  try {
+    const j = await api({ action:'vote', poll:id, option, other });
+    if (j.polls) votes = j;
+    if (j.error === 'cerrada') toast('Esa votación ya está cerrada');
+    renderAll();
+  } catch(e) { toast('No se pudo enviar el voto. Revisa tu conexión.'); loadVotes(); }
+}
+async function adminPoll(id, action){
+  const pin = lsGet('tripPR.pin');
+  if (!pin) return toast('Primero pon tu PIN en la pestaña Viaje');
+  try {
+    const j = await api({ action, poll:id, pin });
+    if (j.error === 'pin') return toast('PIN incorrecto');
+    if (j.polls){ votes = j; renderAll(); renderEditor(); toast(action === 'close' ? 'Votación cerrada' : 'Votación reabierta'); }
+  } catch(e) { toast('No se pudo conectar con la hoja.'); }
+}
+
+function pollHtml(poll){
+  const res = votes.polls[poll.id] || { counts:{}, closed:false };
+  const closed = !!res.closed, mine = votes.mine[poll.id], live = !!state.votesUrl;
+  const defined = (poll.options || []).filter(o => o.label);
+  const extra = Object.keys(res.counts).filter(k => res.counts[k] > 0 && !defined.some(o => o.label === k)).map(label => ({ label }));
+  const all = [...defined, ...extra];
+  const total = all.reduce((s,o) => s + (res.counts[o.label] || 0), 0);
+  const max = Math.max(0, ...all.map(o => res.counts[o.label] || 0));
+  const show = !!mine || closed;
+  const opts = all.map(o => {
+    const n = res.counts[o.label] || 0, pct = total ? Math.round(n * 100 / total) : 0, link = extUrl(o.link);
+    return `<div class="opt ${mine === o.label ? 'mine' : ''} ${closed && n === max && n > 0 ? 'win' : ''}">
+      <span class="bar" style="width:${show ? pct : 0}%"></span>
+      <button class="lbl" data-vote="${esc(poll.id)}" data-opt="${esc(o.label)}" ${closed || !live ? 'disabled' : ''}>${mine === o.label ? '✓ ' : ''}${closed && n === max && n > 0 ? '★ ' : ''}${esc(o.label)}</button>
+      ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">${esc(linkLabel(link))}</a>` : ''}
+      ${show ? `<span class="pct">${n} · ${pct}%</span>` : ''}
+    </div>`;
+  }).join('');
+  const foot = !live ? 'Votación aún sin conectar.' : closed ? 'Votación cerrada.' : mine ? 'Puedes cambiar tu voto tocando otra opción.' : 'Toca una opción para votar.';
+  return `<div class="poll">
+    <div class="poll-q"><span>${esc(poll.question || 'Votación')}</span><span class="badge ${closed ? 'warn' : 'ok'}">${closed ? 'Cerrada' : 'Abierta'}</span></div>
+    ${opts}
+    ${poll.allowOther && live && !closed ? `<form class="poll-other" data-other="${esc(poll.id)}"><input name="o" maxlength="60" placeholder="Proponer otra opción…" autocomplete="off"><button class="btn sm">Proponer</button></form>` : ''}
+    <p class="poll-foot">${foot}</p>
+  </div>`;
+}
+
 function normalize(){
   state.trip ||= { title:'Mi viaje', subtitle:'', start:'', end:'' };
   state.flights ||= []; state.hotels ||= []; state.days ||= [];
@@ -232,6 +327,7 @@ async function load(){
   state = newer ? local : clone(fileData);
   normalize(); renderAll();
   if (location.hash === '#editar') openEditor();
+  loadVotes();
 }
 
 /* ---------- vistas ---------- */
@@ -313,7 +409,8 @@ function daySlide(d, i){
       ${a.place ? `<p class="place">${esc(a.place)}</p>` : ''}
       ${a.note ? `<p class="note">${esc(a.note)}</p>` : ''}
       ${photo ? `<img src="${esc(photo)}" alt="${esc(a.title)}" loading="lazy">` : ''}
-      ${map ? `<a href="${esc(map)}" target="_blank" rel="noopener">Ver en el mapa ↗</a>` : ''}
+      ${a.poll ? pollHtml(a.poll) : ''}
+      ${map && !a.poll ? `<a href="${esc(map)}" target="_blank" rel="noopener">Ver en el mapa ↗</a>` : ''}
     </div></li>`;
   }).join('');
   return `<section class="slide day">
@@ -368,7 +465,16 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeFan();
   if (e.key === 'E' && e.shiftKey) openEditor();
 });
-track.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(+b.dataset.go); });
+track.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]'); if (b) go(+b.dataset.go);
+  const v = e.target.closest('[data-vote]'); if (v) sendVote(v.dataset.vote, v.dataset.opt);
+});
+track.addEventListener('submit', e => {
+  const f = e.target.closest('[data-other]'); if (!f) return;
+  e.preventDefault();
+  const val = f.o.value.trim(); if (val) sendVote(f.dataset.other, val, true);
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden) loadVotes(); });
 
 /* abanico */
 function buildFan(){
@@ -453,13 +559,34 @@ const PHOTO = (label, path) => {
       ${v ? `<button class="btn sm ghost" data-act="clear" data-path="${path}">Quitar</button>` : ''}</div>`;
 };
 
+function pollEditor(path, poll, j){
+  const closed = votes.polls[poll.id]?.closed;
+  return `<div class="eb" style="background:var(--paper)">
+    <div class="eb-h">Votación <span class="tools"><button class="btn sm danger" data-act="del-poll" data-j="${j}">Quitar</button></span></div>
+    ${F('Pregunta',`${path}.question`,'text','¿Dónde cenamos?')}
+    ${(poll.options || []).map((o,k) => `<div class="grid2">${F('Opción ' + (k+1),`${path}.options.${k}.label`)}${F('Enlace (Instagram, mapa…)',`${path}.options.${k}.link`,'url','https://instagram.com/…')}</div>
+      <div class="row" style="margin-top:-4px"><button class="btn sm danger" data-act="del-opt" data-j="${j}" data-k="${k}">Quitar opción ${k+1}</button></div>`).join('')}
+    <div class="row"><button class="btn sm" data-act="add-opt" data-j="${j}">+ Opción</button></div>
+    <label class="chk"><input type="checkbox" data-path="${path}.allowOther" ${poll.allowOther ? 'checked' : ''}> Permitir proponer otra opción</label>
+    ${state.votesUrl ? `<div class="row">${closed
+      ? `<button class="btn sm" data-act="open-poll" data-id="${esc(poll.id)}">Reabrir votación</button>`
+      : `<button class="btn sm main" data-act="close-poll" data-id="${esc(poll.id)}">Cerrar votación</button>`}</div>` : `<p class="tip">Conecta la hoja en la pestaña Viaje para recibir votos.</p>`}
+    <p class="tip">Si renombras una opción que ya tiene votos, esos votos se muestran aparte con el nombre anterior.</p>
+  </div>`;
+}
+
 function renderEditor(){
   document.querySelectorAll('#edTabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === edTab));
   let h = '';
   if (edTab === 'trip'){
     h = `${F('Título','trip.title')}${F('Subtítulo','trip.subtitle')}
       <div class="grid2">${F('Inicio','trip.start','date')}${F('Fin','trip.end','date')}</div>
-      <p class="tip">Las fechas de inicio y fin se usan para la cuenta regresiva. Los días se agregan o quitan en la pestaña Días.</p>`;
+      <p class="tip">Las fechas de inicio y fin se usan para la cuenta regresiva. Los días se agregan o quitan en la pestaña Días.</p>
+      <h4 class="sec">Votaciones</h4>
+      ${F('URL de la aplicación web (Apps Script)','votesUrl','url','https://script.google.com/macros/s/…/exec')}
+      <label class="f"><span>PIN para cerrar votaciones (solo se guarda en este dispositivo)</span><input type="password" id="adminPin" value="${esc(lsGet('tripPR.pin') || '')}" autocomplete="off"></label>
+      <div class="row"><button class="btn" data-act="test-votes">Probar conexión</button></div>
+      <p class="tip">La URL sí va en itinerario.json (así todos pueden votar). El PIN nunca se sube.</p>`;
   }
   if (edTab === 'flights'){
     h = state.flights.map((f,i) => `<div class="eb">
@@ -496,6 +623,7 @@ function renderEditor(){
           ${T('Notas',`${p}.activities.${j}.note`)}
           ${F('Enlace de mapa (opcional)',`${p}.activities.${j}.map`,'url','https://maps.app.goo.gl/…')}
           ${PHOTO('Foto',`${p}.activities.${j}.photo`)}
+          ${a.poll ? pollEditor(`${p}.activities.${j}.poll`, a.poll, j) : `<button class="btn sm" data-act="add-poll" data-j="${j}">+ Convertir en votación</button>`}
         </div>`).join('')}
         <div class="row"><button class="btn main" data-act="add-act">+ Agregar actividad</button><button class="btn" data-act="sort">Ordenar por hora</button></div>
         <div class="row"><button class="btn" data-act="add-day">+ Agregar día al final</button><button class="btn danger" data-act="del-day">Eliminar este día</button></div>`;
@@ -507,14 +635,16 @@ function renderEditor(){
 $('#edTabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b){ edTab = b.dataset.tab; renderEditor(); edBody.scrollTop = 0; } });
 
 edBody.addEventListener('input', e => {
+  if (e.target.id === 'adminPin'){ lsSet('tripPR.pin', e.target.value); return; }
   const p = e.target.dataset.path; if (!p) return;
-  let v = e.target.value;
+  let v = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
   if (/\.(from|to)$/.test(p)) v = v.toUpperCase();
   setPath(state, p, v); changed(false);
 });
 edBody.addEventListener('change', async e => {
   if (e.target.id === 'edDaySel'){ edDay = +e.target.value; renderEditor(); go(edDay + 1); return; }
   if (e.target.tagName === 'SELECT' && e.target.dataset.path){ changed(true); return; }
+  if (e.target.dataset.path === 'votesUrl'){ state.votesUrl = e.target.value.trim(); changed(true); loadVotes(); return; }
   const up = e.target.dataset.upload;
   if (up && e.target.files[0]){
     try { setPath(state, up, await compress(e.target.files[0])); changed(true); }
@@ -524,6 +654,17 @@ edBody.addEventListener('change', async e => {
 edBody.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const act = b.dataset.act, acts = state.days[edDay]?.activities, j = +b.dataset.j;
+  if (act === 'close-poll') return adminPoll(b.dataset.id, 'close');
+  if (act === 'open-poll') return adminPoll(b.dataset.id, 'open');
+  if (act === 'test-votes'){
+    if (!state.votesUrl) return toast('Primero pega la URL');
+    fetch(state.votesUrl).then(r => r.json()).then(j => toast(j.polls ? 'Conexión correcta ✓' : 'La URL respondió, pero no parece el script')).catch(() => toast('No se pudo conectar. Revisa la URL y el acceso "Cualquier persona".'));
+    return;
+  }
+  if (act === 'add-poll') acts[j].poll = { id: 'p' + Date.now().toString(36), question: '', allowOther: true, options: [{ label:'', link:'' }, { label:'', link:'' }] };
+  if (act === 'del-poll'){ if (!confirm('¿Quitar la votación de esta actividad? Los votos siguen en la hoja.')) return; delete acts[j].poll; }
+  if (act === 'add-opt') acts[j].poll.options.push({ label:'', link:'' });
+  if (act === 'del-opt') acts[j].poll.options.splice(+b.dataset.k, 1);
   if (act === 'add-flight') state.flights.push({ code:'', leg:'ida', from:'', to:'', date: state.trip.start || '', dep:'', arr:'', status:'pendiente', note:'' });
   if (act === 'add-hotel') state.hotels.push({ name:'', city:'', date:'', status:'pendiente', note:'' });
   if (act === 'del'){ if (!confirm('¿Eliminar este elemento?')) return; state[b.dataset.list].splice(+b.dataset.i, 1); }
