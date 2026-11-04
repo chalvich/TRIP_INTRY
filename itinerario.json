@@ -1,5 +1,6 @@
 {
-  "updated": "2026-11-04T13:45:00Z",
+  "updated": "2026-11-04T14:15:00Z",
+  "votesUrl": "https://script.google.com/macros/s/AKfycbx-zbi_wU8cJRzmNOs6fYfeYU1_t0H5ay3Q--s5Br-Vvka2bqwPO4uExU_WZkyKAoDkkg/exec",
   "trip": {
     "title": "Puerto Rico",
     "subtitle": "Isla del Encanto",
@@ -7,22 +8,161 @@
     "end": "2026-11-24"
   },
   "flights": [
-    { "code": "AV0045", "leg": "ida", "from": "MEX", "to": "BOG", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá" },
-    { "code": "AV0258", "leg": "ida", "from": "BOG", "to": "SJU", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a San Juan" },
-    { "code": "AV0259", "leg": "regreso", "from": "SJU", "to": "BOG", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá" },
-    { "code": "AV0044", "leg": "regreso", "from": "BOG", "to": "MEX", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a CDMX" }
+    {
+      "code": "AV0045",
+      "leg": "ida",
+      "from": "MEX",
+      "to": "BOG",
+      "date": "2026-11-18",
+      "dep": "",
+      "arr": "",
+      "status": "confirmado",
+      "note": "Tramo 1 · conexión en Bogotá"
+    },
+    {
+      "code": "AV0258",
+      "leg": "ida",
+      "from": "BOG",
+      "to": "SJU",
+      "date": "2026-11-18",
+      "dep": "",
+      "arr": "",
+      "status": "confirmado",
+      "note": "Tramo 2 · llegada a San Juan"
+    },
+    {
+      "code": "AV0259",
+      "leg": "regreso",
+      "from": "SJU",
+      "to": "BOG",
+      "date": "2026-11-24",
+      "dep": "",
+      "arr": "",
+      "status": "confirmado",
+      "note": "Tramo 1 · conexión en Bogotá"
+    },
+    {
+      "code": "AV0044",
+      "leg": "regreso",
+      "from": "BOG",
+      "to": "MEX",
+      "date": "2026-11-24",
+      "dep": "",
+      "arr": "",
+      "status": "confirmado",
+      "note": "Tramo 2 · llegada a CDMX"
+    }
   ],
   "hotels": [
-    { "name": "Hotel CDMX · salida", "city": "Ciudad de México", "date": "2026-11-18", "status": "pendiente", "note": "Por definir según el horario del AV0045." },
-    { "name": "Hotel CDMX · regreso", "city": "Ciudad de México", "date": "2026-11-24", "status": "pendiente", "note": "Por definir según la hora de llegada del AV0044." }
+    {
+      "name": "Hotel CDMX · salida",
+      "city": "Ciudad de México",
+      "date": "2026-11-18",
+      "status": "pendiente",
+      "note": "Por definir según el horario del AV0045."
+    },
+    {
+      "name": "Hotel CDMX · regreso",
+      "city": "Ciudad de México",
+      "date": "2026-11-24",
+      "status": "pendiente",
+      "note": "Por definir según la hora de llegada del AV0044."
+    }
   ],
   "days": [
-    { "date": "2026-11-18", "title": "Rumbo a la isla", "cover": "", "activities": [] },
-    { "date": "2026-11-19", "title": "Por planear", "cover": "", "activities": [] },
-    { "date": "2026-11-20", "title": "Por planear", "cover": "", "activities": [] },
-    { "date": "2026-11-21", "title": "Por planear", "cover": "", "activities": [] },
-    { "date": "2026-11-22", "title": "Por planear", "cover": "", "activities": [] },
-    { "date": "2026-11-23", "title": "Por planear", "cover": "", "activities": [] },
-    { "date": "2026-11-24", "title": "De vuelta a casa", "cover": "", "activities": [] }
+    {
+      "date": "2026-11-18",
+      "title": "Rumbo a la isla",
+      "cover": "",
+      "activities": [
+        {
+          "time": "",
+          "title": "Cena de llegada",
+          "place": "San Juan",
+          "note": "Después de aterrizar, vamos directo a cenar.",
+          "map": "",
+          "photo": "",
+          "poll": {
+            "id": "d18-cena",
+            "question": "¿Dónde cenamos?",
+            "allowOther": true,
+            "options": [
+              {
+                "label": "Mensho Puerto Rico",
+                "link": "https://www.instagram.com/mensho_puertorico/"
+              },
+              {
+                "label": "Laut",
+                "link": "https://www.instagram.com/laut_pr/"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-11-19",
+      "title": "Jueves en San Juan",
+      "cover": "",
+      "activities": [
+        {
+          "time": "",
+          "title": "Plan del jueves",
+          "place": "",
+          "note": "",
+          "map": "",
+          "photo": "",
+          "poll": {
+            "id": "d19-plan",
+            "question": "¿Qué hacemos el jueves?",
+            "allowOther": true,
+            "options": [
+              {
+                "label": "Comer en La Casita Blanca",
+                "link": "https://www.google.com/maps/search/?api=1&query=La+Casita+Blanca+San+Juan+Puerto+Rico"
+              },
+              {
+                "label": "Paseo por el Viejo San Juan",
+                "link": "https://www.google.com/maps/search/?api=1&query=Viejo+San+Juan"
+              },
+              {
+                "label": "Tarde de playa",
+                "link": ""
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-11-20",
+      "title": "Por planear",
+      "cover": "",
+      "activities": []
+    },
+    {
+      "date": "2026-11-21",
+      "title": "Por planear",
+      "cover": "",
+      "activities": []
+    },
+    {
+      "date": "2026-11-22",
+      "title": "Por planear",
+      "cover": "",
+      "activities": []
+    },
+    {
+      "date": "2026-11-23",
+      "title": "Por planear",
+      "cover": "",
+      "activities": []
+    },
+    {
+      "date": "2026-11-24",
+      "title": "De vuelta a casa",
+      "cover": "",
+      "activities": []
+    }
   ]
 }

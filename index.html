@@ -91,10 +91,11 @@ img{display:block;max-width:100%}
 .day .wrap{max-width:560px;margin:0 auto}
 
 .timeline{list-style:none;position:relative;margin-left:6px}
-.timeline::before{content:"";position:absolute;left:62px;top:8px;bottom:8px;width:1px;background:var(--line)}
-.act{display:grid;grid-template-columns:56px 1fr;gap:20px;padding-bottom:18px;position:relative}
-.act::before{content:"";position:absolute;left:58px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--cream);border:2px solid var(--olive)}
+.timeline::before{content:"";position:absolute;left:50px;top:8px;bottom:8px;width:1px;background:var(--line)}
+.act{display:grid;grid-template-columns:46px minmax(0,1fr);gap:18px;padding-bottom:18px;position:relative}
+.act::before{content:"";position:absolute;left:46px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--cream);border:2px solid var(--olive)}
 .act-time{font-size:.85rem;font-weight:500;color:var(--cafe);padding-top:2px;text-align:right}
+.act-body{min-width:0}
 .act-body h4{font-family:var(--serif);font-size:1.35rem;font-weight:600;line-height:1.15;color:var(--forest)}
 .act-body .place{font-size:.85rem;color:var(--olive);margin-top:3px}
 .act-body .note{font-size:.92rem;margin-top:6px;line-height:1.5;white-space:pre-line}
@@ -111,7 +112,8 @@ img{display:block;max-width:100%}
 .opt>*:not(.bar){position:relative}
 .opt .lbl{flex:1;text-align:left;border:0;background:none;padding:11px 0 11px 12px;color:var(--ink);font-size:.95rem;font-weight:400}
 .opt .lbl:disabled{cursor:default}
-.opt a{font-size:.75rem;color:var(--cafe);text-decoration:none;white-space:nowrap;margin-top:0;border:0}
+.opt .meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;max-width:42%;min-width:0}
+.opt a{max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:.75rem;color:var(--cafe);text-decoration:none;white-space:nowrap;margin-top:0;border:0}
 .opt .pct{font-size:.75rem;color:var(--muted);white-space:nowrap}
 .opt.mine{border-color:var(--olive);box-shadow:inset 0 0 0 1px var(--olive)}
 .opt.mine .lbl{font-weight:500;color:var(--forest)}
@@ -150,6 +152,7 @@ img{display:block;max-width:100%}
 .ed-x{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:none;font-size:1.2rem;color:var(--ink)}
 .ed-status{padding:0 20px;font-size:.75rem;color:var(--muted)}
 .ed-status.warn{color:var(--terra)}
+.ed-head,.ed-status,.ed-tabs,.ed-foot{flex-shrink:0}
 .ed-tabs{display:flex;gap:6px;padding:12px 20px;overflow-x:auto;border-bottom:1px solid var(--line)}
 .ed-tabs button{flex:0 0 auto;border:1px solid var(--line);background:none;border-radius:99px;padding:7px 14px;font-size:.85rem;color:var(--ink);white-space:nowrap}
 .ed-tabs button.on{background:var(--forest);border-color:var(--forest);color:var(--cream)}
@@ -207,7 +210,7 @@ img{display:block;max-width:100%}
 </aside>
 
 <!-- Copia de respaldo de los datos (se usa si itinerario.json no carga) -->
-<script id="seed" type="application/json">{"updated": "2026-11-04T13:45:00Z", "trip": {"title": "Puerto Rico", "subtitle": "Isla del Encanto", "start": "2026-11-18", "end": "2026-11-24"}, "flights": [{"code": "AV0045", "leg": "ida", "from": "MEX", "to": "BOG", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0258", "leg": "ida", "from": "BOG", "to": "SJU", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a San Juan"}, {"code": "AV0259", "leg": "regreso", "from": "SJU", "to": "BOG", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0044", "leg": "regreso", "from": "BOG", "to": "MEX", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a CDMX"}], "hotels": [{"name": "Hotel CDMX · salida", "city": "Ciudad de México", "date": "2026-11-18", "status": "pendiente", "note": "Por definir según el horario del AV0045."}, {"name": "Hotel CDMX · regreso", "city": "Ciudad de México", "date": "2026-11-24", "status": "pendiente", "note": "Por definir según la hora de llegada del AV0044."}], "days": [{"date": "2026-11-18", "title": "Rumbo a la isla", "cover": "", "activities": []}, {"date": "2026-11-19", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-20", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-21", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-22", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-23", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-24", "title": "De vuelta a casa", "cover": "", "activities": []}]}</script>
+<script id="seed" type="application/json">{"updated": "2026-11-04T14:15:00Z", "votesUrl": "https://script.google.com/macros/s/AKfycbx-zbi_wU8cJRzmNOs6fYfeYU1_t0H5ay3Q--s5Br-Vvka2bqwPO4uExU_WZkyKAoDkkg/exec", "trip": {"title": "Puerto Rico", "subtitle": "Isla del Encanto", "start": "2026-11-18", "end": "2026-11-24"}, "flights": [{"code": "AV0045", "leg": "ida", "from": "MEX", "to": "BOG", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0258", "leg": "ida", "from": "BOG", "to": "SJU", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a San Juan"}, {"code": "AV0259", "leg": "regreso", "from": "SJU", "to": "BOG", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0044", "leg": "regreso", "from": "BOG", "to": "MEX", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a CDMX"}], "hotels": [{"name": "Hotel CDMX · salida", "city": "Ciudad de México", "date": "2026-11-18", "status": "pendiente", "note": "Por definir según el horario del AV0045."}, {"name": "Hotel CDMX · regreso", "city": "Ciudad de México", "date": "2026-11-24", "status": "pendiente", "note": "Por definir según la hora de llegada del AV0044."}], "days": [{"date": "2026-11-18", "title": "Rumbo a la isla", "cover": "", "activities": [{"time": "", "title": "Cena de llegada", "place": "San Juan", "note": "Después de aterrizar, vamos directo a cenar.", "map": "", "photo": "", "poll": {"id": "d18-cena", "question": "¿Dónde cenamos?", "allowOther": true, "options": [{"label": "Mensho Puerto Rico", "link": "https://www.instagram.com/mensho_puertorico/"}, {"label": "Laut", "link": "https://www.instagram.com/laut_pr/"}]}}]}, {"date": "2026-11-19", "title": "Jueves en San Juan", "cover": "", "activities": [{"time": "", "title": "Plan del jueves", "place": "", "note": "", "map": "", "photo": "", "poll": {"id": "d19-plan", "question": "¿Qué hacemos el jueves?", "allowOther": true, "options": [{"label": "Comer en La Casita Blanca", "link": "https://www.google.com/maps/search/?api=1&query=La+Casita+Blanca+San+Juan+Puerto+Rico"}, {"label": "Paseo por el Viejo San Juan", "link": "https://www.google.com/maps/search/?api=1&query=Viejo+San+Juan"}, {"label": "Tarde de playa", "link": ""}]}}]}, {"date": "2026-11-20", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-21", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-22", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-23", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-24", "title": "De vuelta a casa", "cover": "", "activities": []}]}</script>
 
 <script>
 (() => {
@@ -294,8 +297,7 @@ function pollHtml(poll){
     return `<div class="opt ${mine === o.label ? 'mine' : ''} ${closed && n === max && n > 0 ? 'win' : ''}">
       <span class="bar" style="width:${show ? pct : 0}%"></span>
       <button class="lbl" data-vote="${esc(poll.id)}" data-opt="${esc(o.label)}" ${closed || !live ? 'disabled' : ''}>${mine === o.label ? '✓ ' : ''}${closed && n === max && n > 0 ? '★ ' : ''}${esc(o.label)}</button>
-      ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">${esc(linkLabel(link))}</a>` : ''}
-      ${show ? `<span class="pct">${n} · ${pct}%</span>` : ''}
+      ${link || show ? `<span class="meta">${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">${esc(linkLabel(link))}</a>` : ''}${show ? `<span class="pct">${n} · ${pct}%</span>` : ''}</span>` : ''}
     </div>`;
   }).join('');
   const foot = !live ? 'Votación aún sin conectar.' : closed ? 'Votación cerrada.' : mine ? 'Puedes cambiar tu voto tocando otra opción.' : 'Toca una opción para votar.';
