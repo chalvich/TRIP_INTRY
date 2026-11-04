@@ -99,11 +99,20 @@ img{display:block;max-width:100%}
 .day-inner{padding:0 2px}
 .day-inner .sec{margin-top:20px}
 
-.timeline{list-style:none;position:relative;margin-left:2px}
-.timeline::before{content:"";position:absolute;left:46px;top:8px;bottom:8px;width:1px;background:var(--line)}
-.act{display:grid;grid-template-columns:42px minmax(0,1fr);gap:16px;padding-bottom:18px;position:relative}
-.act::before{content:"";position:absolute;left:42px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--cream);border:2px solid var(--olive)}
-.act-time{font-size:.8rem;font-weight:500;color:var(--cafe);padding-top:3px;text-align:right}
+.acts{display:grid;gap:8px}
+.a-time{flex:0 0 auto;min-width:48px;text-align:center;font-size:.74rem;font-weight:500;color:var(--cafe);background:var(--sand);border-radius:8px;padding:4px 6px}
+.a-time.none{background:none;color:var(--sage)}
+.a-main{min-width:0;flex:1}
+.a-main b{display:block;font-family:var(--serif);font-weight:600;font-size:1.2rem;line-height:1.15;color:var(--forest);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-main small{display:block;font-size:.76rem;color:var(--olive);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-ico{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;font-size:.6rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:4px 8px}
+.a-ico svg{width:13px;height:13px}
+.a-ico.open{background:#f4e1d3;color:var(--terra)}
+.a-ico.voted{background:#e3e7d6;color:var(--olive)}
+.a-ico.closed{background:var(--sand);color:var(--cafe-d)}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--terra);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.2}}
+.act-card .fold-body{padding-top:4px}
 .act-body{min-width:0}
 .act-body h4{font-family:var(--serif);font-size:1.3rem;font-weight:600;line-height:1.15;color:var(--forest)}
 .act-body .place{font-size:.84rem;color:var(--olive);margin-top:3px}
@@ -173,22 +182,25 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
 
 /* ---------- rueda de fechas (derecha) ---------- */
 .dial{position:fixed;right:0;top:0;width:0;height:0;z-index:30}
-.knob{position:fixed;right:12px;top:70vh;width:50px;height:50px;margin-top:-25px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+.knob{position:fixed;right:22px;bottom:calc(92px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:rgba(251,248,242,.74);border:1px solid rgba(95,107,72,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(46,58,41,.16);color:var(--forest);
-  touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;z-index:2;transition:top .35s cubic-bezier(.2,.85,.25,1),transform .2s,background .2s,box-shadow .2s}
+  touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;z-index:2;transition:transform .2s,background .2s,box-shadow .2s}
 .knob b{font-family:var(--serif);font-weight:600;font-size:1.15rem;line-height:1}
 .knob small{font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;opacity:.8}
 .dial.open .knob{background:rgba(164,174,142,.96);border-color:rgba(95,107,72,.5);transform:scale(1.14);box-shadow:0 10px 26px rgba(46,58,41,.25)}
 .dial.drag .knob{transition:transform .2s,background .2s,box-shadow .2s;cursor:grabbing}
-.track{position:fixed;right:10px;width:54px;border-radius:27px;background:rgba(245,239,228,.88);border:1px solid rgba(95,107,72,.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:-6px 0 24px rgba(46,58,41,.14);
+.track{position:fixed;right:21px;width:54px;border-radius:27px;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 28%,#000 100%);mask-image:linear-gradient(180deg,transparent 0,#000 28%,#000 100%);background:rgba(245,239,228,.88);border:1px solid rgba(95,107,72,.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:-6px 0 24px rgba(46,58,41,.14);
   opacity:0;transform:scaleY(.3);pointer-events:none;transition:opacity .2s ease,transform .32s cubic-bezier(.2,.85,.25,1)}
 .dial.open .track{opacity:1;transform:none;pointer-events:auto}
 .stop{position:absolute;left:0;right:0;height:40px;margin-top:-20px;border:0;background:none;color:var(--forest);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:scale(.5);opacity:0;transition:transform .3s cubic-bezier(.2,.85,.25,1),opacity .25s}
-.dial.open .stop{transform:scale(1);opacity:.8}
+.dial.open .stop{transform:scale(var(--s,1));opacity:var(--o,.8)}
+#rail{position:absolute;inset:0}
+.dial.drag .stop{transition:none}
+#rail.snap .stop{transition:top .3s cubic-bezier(.2,.85,.25,1),transform .3s,opacity .3s}
 .stop b{font-family:var(--serif);font-weight:600;font-size:1.15rem;line-height:1}
 .stop small{font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;opacity:.75}
 .stop+.stop::before{content:"";position:absolute;top:-2px;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:rgba(46,58,41,.3)}
-.bubble{position:fixed;right:84px;top:70vh;transform:translate(10px,-50%);opacity:0;pointer-events:none;z-index:31;background:var(--cream);color:var(--forest);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 10px 30px rgba(46,58,41,.2);transition:opacity .2s,transform .2s;white-space:nowrap;text-align:right}
+.bubble{position:fixed;right:88px;top:80vh;transform:translate(10px,-50%);opacity:0;pointer-events:none;z-index:31;background:var(--cream);color:var(--forest);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 10px 30px rgba(46,58,41,.2);transition:opacity .2s,transform .2s;white-space:nowrap;text-align:right}
 .bubble.on{opacity:1;transform:translate(0,-50%)}
 .bubble b{display:block;font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.25rem;line-height:1.1}
 .bubble small{font-size:.72rem;color:var(--muted)}
@@ -399,6 +411,9 @@ async function load(){
 
 /* ---------- vistas ---------- */
 const sunSvg = `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="32" cy="32" r="11"/>${Array.from({length:12},(_,i)=>{const a=i*Math.PI/6,r1=17,r2=i%2?23:27;return `<line x1="${32+r1*Math.cos(a)}" y1="${32+r1*Math.sin(a)}" x2="${32+r2*Math.cos(a)}" y2="${32+r2*Math.sin(a)}"/>`}).join('')}</svg>`;
+const ballotSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h16v7H4z"/><path d="M8 13V5h8v8"/><path d="M10 9l1.5 1.5L14 8"/></svg>`;
+const checkSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+const starSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>`;
 const chev = `<span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>`;
 
 function countdown(){
@@ -475,17 +490,28 @@ function daySection(d, i){
   const flights = state.flights.filter(f => f.date === d.date);
   const hotels = state.hotels.map((h,k) => [h,k]).filter(([h]) => h.date === d.date);
   const cover = safeUrl(d.cover);
-  const acts = d.activities.map(a => {
+  const acts = d.activities.map((a, j) => {
     const map = extUrl(a.map) || (a.place ? mapsQ(a.place) : '');
     const photo = safeUrl(a.photo);
-    return `<li class="act"><div class="act-time">${esc(a.time || '')}</div><div class="act-body">
-      <h4>${esc(a.title || 'Actividad')}</h4>
-      ${a.place ? `<p class="place">${esc(a.place)}</p>` : ''}
+    let ico = '';
+    if (a.poll){
+      const res = votes.polls[a.poll.id] || { counts:{} };
+      if (res.closed){
+        const top = Object.entries(res.counts).sort((x,y) => y[1] - x[1])[0];
+        ico = `<span class="a-ico closed" title="Votación cerrada">${starSvg}${top && top[1] ? esc(top[0]) : 'Cerrada'}</span>`;
+      } else if (votes.mine[a.poll.id]) ico = `<span class="a-ico voted" title="Ya votaste">${checkSvg}Votaste</span>`;
+      else ico = `<span class="a-ico open" title="Votación abierta"><span class="pulse"></span>${ballotSvg}Votar</span>`;
+    }
+    const summary = `<span class="a-time ${a.time ? '' : 'none'}">${esc(a.time || '—')}</span>
+      <span class="a-main"><b>${esc(a.title || 'Actividad')}</b>${a.place ? `<small>${esc(a.place)}</small>` : ''}</span>${ico}`;
+    const body = `<div class="act-body">
       ${a.note ? `<p class="note">${esc(a.note)}</p>` : ''}
       ${photo ? `<img src="${esc(photo)}" alt="${esc(a.title)}" loading="lazy">` : ''}
       ${a.poll ? pollHtml(a.poll) : ''}
       ${map && !a.poll ? `<a href="${esc(map)}" target="_blank" rel="noopener">${esc(/instagram\.com/i.test(map) ? linkLabel(map) + ' ↗' : 'Ver en el mapa ↗')}</a>` : ''}
-    </div></li>`;
+      ${!a.note && !photo && !a.poll && !map ? '<p class="note" style="color:var(--muted)">Sin detalles todavía.</p>' : ''}
+    </div>`;
+    return fold(`a-${d.date}-${j}`, 'act-card', summary, body);
   }).join('');
   return `<section class="day ${i % 2 ? 'alt' : ''}" id="s${i+1}" data-stop="${i+1}">
     <div class="head"><header class="day-hero ${cover ? 'has-img' : ''}">
@@ -498,7 +524,7 @@ function daySection(d, i){
       ${flights.length ? `<h3 class="sec">Vuelos del día</h3>${flights.map(f => flightRow(f,'d' + i)).join('')}` : ''}
       ${hotels.length ? `<h3 class="sec">Hospedaje</h3>${hotels.map(([h,k]) => hotelRow(h,'d' + i,k)).join('')}` : ''}
       <h3 class="sec">Actividades</h3>
-      ${acts ? `<ol class="timeline">${acts}</ol>` : `<div class="empty"><b>Día libre… por ahora</b>Agrega actividades desde el menú de edición.</div>`}
+      ${acts ? `<div class="acts">${acts}</div>` : `<div class="empty"><b>Día libre… por ahora</b>Agrega actividades desde el menú de edición.</div>`}
       ${i === state.days.length - 1 ? '<p class="end">¡Buen viaje! ✦</p>' : ''}
       ${pager(i + 1)}
     </div>
@@ -525,13 +551,13 @@ page.addEventListener('toggle', e => {
   e.target.open ? openFolds.add(k) : openFolds.delete(k);
 }, true);
 
-/* ---------- bolita tipo zoom de cámara + cambio de pantalla con morph ---------- */
-const STEP = 42, PAD = 27;    // separación entre fechas y margen del riel
-let cur = 0, pos = 0, dragging = false, open = false, sticky = false, bubbleT, vt, lastWheel = 0, trackTop = 0;
+/* ---------- bolita fija tipo zoom de cámara + cambio de pantalla con morph ---------- */
+const STEP = 42;              // separación entre fechas en el riel
+const ABOVE = 240, BELOW = 46; // cuánto riel se ve arriba y abajo de la bolita
+let cur = 0, pos = 0, dragging = false, open = false, sticky = false, bubbleT, vt, lastWheel = 0;
 const stopCount = () => state.days.length + 1;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const anchorY = () => Math.round(innerHeight * 0.7);   // altura del pulgar
-const trackH = () => (stopCount() - 1) * STEP + PAD * 2;
+const knobCY = () => { const r = knob.getBoundingClientRect(); return r.top + r.height / 2; };
 const stopLabel = i => {
   const d = state.days[i - 1];
   return i === 0 ? ['✦','Inicio'] : [d?.date ? asDate(d.date).getDate() : i, fmt(d?.date,{weekday:'short'}).replace('.','')];
@@ -541,24 +567,28 @@ function buildDial(){
   const n = stopCount(); let h = '';
   for (let i = 0; i < n; i++){
     const [b, s] = stopLabel(i);
-    h += `<button class="stop" data-i="${i}" style="top:${PAD + i * STEP}px" aria-label="${i ? 'Día ' + i : 'Inicio'}"><b>${esc(b)}</b><small>${esc(s)}</small></button>`;
+    h += `<button class="stop" data-i="${i}" aria-label="${i ? 'Día ' + i : 'Inicio'}"><b>${esc(b)}</b><small>${esc(s)}</small></button>`;
   }
   rail.innerHTML = h;
-  trackEl.style.height = trackH() + 'px';
-  paintDial();
+  placeTrack(); paintDial();
 }
-function layoutTrack(){
-  trackTop = clamp(anchorY() - PAD - cur * STEP, 14, innerHeight - trackH() - 14);
-  trackEl.style.top = trackTop + 'px';
-  trackEl.style.transformOrigin = `50% ${anchorY() - trackTop}px`;
-  rail.querySelectorAll('.stop').forEach(s => { s.style.transitionDelay = Math.abs(+s.dataset.i - cur) * 25 + 'ms'; });
+function placeTrack(){
+  const cy = knobCY();
+  trackEl.style.top = (cy - ABOVE) + 'px';
+  trackEl.style.height = (ABOVE + BELOW) + 'px';
+  trackEl.style.transformOrigin = `50% ${ABOVE}px`;
+  bubble.style.top = cy + 'px';
 }
 function paintDial(){
-  const y = open ? trackTop + PAD + pos * STEP : anchorY();
+  // la bolita no se mueve: el riel de fechas se desliza debajo de ella
+  rail.querySelectorAll('.stop').forEach(s => {
+    const d = +s.dataset.i - pos, ad = Math.abs(d);
+    s.style.top = (ABOVE + d * STEP) + 'px';
+    s.style.setProperty('--s', Math.max(.62, 1 - ad * .09));
+    s.style.setProperty('--o', Math.max(.12, 1 - ad * .16));
+  });
   const [b, s] = stopLabel(Math.round(pos));
   knob.innerHTML = `<b>${esc(b)}</b><small>${esc(s)}</small>`;
-  knob.style.top = y + 'px';
-  bubble.style.top = y + 'px';
 }
 function showBubble(i, stay){
   const d = state.days[i - 1];
@@ -569,12 +599,13 @@ function showBubble(i, stay){
   clearTimeout(bubbleT);
   if (!stay) bubbleT = setTimeout(() => bubble.classList.remove('on'), 900);
 }
-function expand(){ if (open) return; layoutTrack(); open = true; dial.classList.add('open'); }
-function collapse(){ open = false; sticky = false; pos = cur; dial.classList.remove('open','drag'); paintDial(); showBubble(cur); }
+function snap(){ rail.classList.add('snap'); pos = cur; paintDial(); setTimeout(() => rail.classList.remove('snap'), 320); }
+function expand(){ if (open) return; placeTrack(); open = true; dial.classList.add('open'); }
+function collapse(){ open = false; sticky = false; dial.classList.remove('open','drag'); snap(); showBubble(cur); }
 
 function show(i){
   i = clamp(i, 0, stopCount() - 1);
-  if (i === cur){ if (!dragging){ pos = cur; paintDial(); } return; }
+  if (i === cur){ if (!dragging) snap(); return; }
   const dir = i > cur ? 'fwd' : 'back';
   document.documentElement.dataset.dir = dir;
   cur = i;
@@ -586,7 +617,7 @@ function show(i){
     renderView(true);
     if (!reduceMotion){ page.classList.remove('enter-fwd','enter-back'); void page.offsetWidth; page.classList.add('enter-' + dir); }
   }
-  if (!dragging){ pos = cur; paintDial(); }
+  if (!dragging) snap();
   if (navigator.vibrate) navigator.vibrate(6);
   showBubble(i, dragging || sticky);
 }
@@ -604,7 +635,8 @@ knob.addEventListener('pointermove', e => {
   if (!dragging) return;
   const dy = e.clientY - startY; moved = Math.max(moved, Math.abs(dy));
   if (moved < 4) return;
-  pos = clamp(startPos + dy / STEP, 0, stopCount() - 1);   // tope en Inicio y en el último día
+  // el riel sigue al dedo: subir trae los días siguientes; topa en Inicio y en el último día
+  pos = clamp(startPos - dy / STEP, 0, stopCount() - 1);
   paintDial();
   const r = Math.round(pos);
   if (r !== cur) show(r);
@@ -612,7 +644,7 @@ knob.addEventListener('pointermove', e => {
 function endDrag(){
   if (!dragging) return;
   dragging = false; dial.classList.remove('drag');
-  if (moved < 6 && !sticky){ sticky = true; pos = cur; paintDial(); showBubble(cur, true); return; }   // un toque deja la rueda abierta
+  if (moved < 6 && !sticky){ sticky = true; snap(); showBubble(cur, true); return; }   // un toque deja el riel abierto
   collapse();
 }
 knob.addEventListener('pointerup', endDrag);
@@ -624,7 +656,7 @@ knob.addEventListener('wheel', e => {
   const now = Date.now(); if (now - lastWheel < 280) return; lastWheel = now;
   show(cur + Math.sign(e.deltaY));
 }, { passive:false });
-addEventListener('resize', () => { if (open) layoutTrack(); paintDial(); });
+addEventListener('resize', () => { placeTrack(); paintDial(); });
 
 /* deslizar de lado sobre la pantalla también cambia de día */
 let sx = null, sy = 0, st0 = 0;
