@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Puerto Rico · Nov 2026</title>
+<meta name="theme-color" content="#2e3a29">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#f5efe4; --paper:#fbf8f2; --sand:#e8ddca; --line:#dccfb8;
+  --sage:#a4ae8e; --olive:#5f6b48; --forest:#2e3a29;
+  --cafe:#7b5236; --cafe-d:#4b3527; --terra:#b26f47;
+  --ink:#2a251f; --muted:#7f7568;
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer}
+img{display:block;max-width:100%}
+
+/* ---------- carrusel de días ---------- */
+.track{display:flex;height:100dvh;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.track::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;height:100%;overflow-y:auto;scroll-snap-align:start;scroll-snap-stop:always;padding-bottom:130px}
+.wrap{max-width:560px;margin:0 auto;padding:0 20px}
+
+/* ---------- inicio ---------- */
+.arch{position:relative;max-width:520px;margin:18px auto 30px;margin-inline:max(16px,calc((100% - 520px)/2));padding:64px 24px 36px;text-align:center;color:var(--cream);
+  border-radius:300px 300px 26px 26px;overflow:hidden;
+  background:radial-gradient(circle at 50% 30%,rgba(245,215,160,.55) 0 60px,transparent 61px),linear-gradient(180deg,#cdb68e 0%,#a4ae8e 46%,#5f6b48 78%,#2e3a29 100%)}
+.arch::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 2px,transparent 2px 9px);pointer-events:none}
+.logo{width:68px;height:68px;border:0;background:none;color:var(--cream);margin:0 auto 18px;display:block;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.logo svg{width:100%;height:100%}
+.eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;opacity:.9}
+.arch h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(3.2rem,15vw,4.6rem);line-height:.95;margin:10px 0 6px}
+.arch .sub{font-family:var(--serif);font-size:1.25rem;opacity:.92}
+.arch .dates{margin-top:22px;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase}
+.count{display:inline-block;margin-top:14px;padding:7px 16px;border:1px solid rgba(245,239,228,.55);border-radius:99px;font-size:.85rem}
+
+.sec{display:flex;align-items:center;gap:12px;margin:30px 0 14px;font-family:var(--sans);font-weight:500;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--cafe)}
+.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+.leg{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--olive);margin:6px 0 10px}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.badge{display:inline-block;font-size:.66rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.badge.ok{background:#e3e7d6;color:var(--olive)}
+.badge.warn{background:#f4e1d3;color:var(--terra)}
+
+/* vuelos */
+.f-top{display:flex;justify-content:space-between;align-items:center}
+.f-code{font-weight:500;letter-spacing:.08em;color:var(--cafe-d)}
+.f-route{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:14px 0 10px}
+.f-route b{display:block;font-family:var(--serif);font-weight:600;font-size:2rem;line-height:1;color:var(--forest)}
+.f-route small{display:block;font-size:.72rem;color:var(--muted);margin-top:3px}
+.f-route .t{display:block;font-size:.85rem;margin-top:6px;color:var(--ink)}
+.f-route .t.tbd{color:var(--terra);font-style:italic}
+.f-route .r{text-align:right}
+.f-line{color:var(--sage);font-size:.8rem;letter-spacing:.2em;white-space:nowrap}
+.f-foot{font-size:.8rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:9px}
+
+/* hoteles */
+.hotel{display:flex;gap:14px;align-items:flex-start}
+.hotel .ico{flex:0 0 40px;height:40px;border-radius:12px;background:var(--sand);display:grid;place-items:center;color:var(--cafe)}
+.hotel h4{font-family:var(--serif);font-size:1.25rem;font-weight:600;line-height:1.15}
+.hotel p{font-size:.85rem;color:var(--muted);margin-top:3px}
+.hotel.pending{border:1.5px dashed var(--terra);background:#fbf3ec}
+.hotel .badge{margin-top:8px}
+
+/* lista de días en inicio */
+.daylist{list-style:none;display:grid;gap:8px}
+.daylist button{width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:10px 14px;color:var(--ink)}
+.daylist .n{flex:0 0 44px;height:44px;border-radius:50%;background:var(--forest);color:var(--cream);display:grid;place-items:center;font-family:var(--serif);font-size:1.3rem;font-weight:600}
+.daylist .tx b{display:block;font-weight:400}
+.daylist .tx small{color:var(--muted);text-transform:capitalize}
+.hint{text-align:center;color:var(--muted);font-size:.8rem;margin:26px 0 0}
+
+/* ---------- día ---------- */
+.day-hero{position:relative;min-height:min(46vh,400px);padding:28px 24px;display:flex;flex-direction:column;justify-content:flex-end;color:var(--cream);border-radius:0 0 30px 30px;overflow:hidden;
+  background:radial-gradient(circle at 85% 20%,rgba(205,182,142,.5) 0 70px,transparent 71px),linear-gradient(160deg,var(--olive),var(--forest))}
+.day-hero.alt{background:radial-gradient(circle at 15% 25%,rgba(245,215,160,.35) 0 60px,transparent 61px),linear-gradient(160deg,var(--cafe),var(--cafe-d))}
+.day-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.day-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(30,26,20,.7))}
+.day-hero>*:not(img){position:relative;z-index:1}
+.day-num{font-family:var(--serif);font-style:italic;font-size:1.3rem;opacity:.9}
+.day-date{font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;margin-top:4px}
+.day-title{font-family:var(--serif);font-weight:500;font-size:clamp(2.3rem,10vw,3.2rem);line-height:1;margin-top:10px}
+.day .wrap{max-width:560px;margin:0 auto}
+
+.timeline{list-style:none;position:relative;margin-left:6px}
+.timeline::before{content:"";position:absolute;left:62px;top:8px;bottom:8px;width:1px;background:var(--line)}
+.act{display:grid;grid-template-columns:56px 1fr;gap:20px;padding-bottom:18px;position:relative}
+.act::before{content:"";position:absolute;left:58px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--cream);border:2px solid var(--olive)}
+.act-time{font-size:.85rem;font-weight:500;color:var(--cafe);padding-top:2px;text-align:right}
+.act-body h4{font-family:var(--serif);font-size:1.35rem;font-weight:600;line-height:1.15;color:var(--forest)}
+.act-body .place{font-size:.85rem;color:var(--olive);margin-top:3px}
+.act-body .note{font-size:.92rem;margin-top:6px;line-height:1.5;white-space:pre-line}
+.act-body img{border-radius:16px;margin-top:10px;width:100%;max-height:300px;object-fit:cover}
+.act-body a{display:inline-block;margin-top:8px;font-size:.8rem;color:var(--cafe);text-decoration:none;border-bottom:1px solid var(--line)}
+.empty{text-align:center;padding:30px 20px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);font-size:.9rem}
+.empty b{display:block;font-family:var(--serif);font-style:italic;font-weight:500;font-size:1.4rem;color:var(--olive);margin-bottom:4px}
+
+/* ---------- dock + abanico ---------- */
+.dock{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:rgba(46,58,41,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:7px;border-radius:99px;z-index:45;box-shadow:0 10px 30px rgba(46,58,41,.35)}
+.dock-btn{width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:var(--cream);font-size:1.6rem;line-height:1}
+.dock-btn:disabled{opacity:.3}
+.fan-btn{min-width:120px;height:46px;padding:0 18px;border-radius:99px;border:0;background:var(--cream);color:var(--forest);font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.2rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.fan-btn i{font-style:normal;font-size:.8rem;transition:transform .3s}
+.fan-btn.open i{transform:rotate(180deg)}
+
+.fan{position:fixed;left:50%;bottom:calc(39px + env(safe-area-inset-bottom));width:0;height:0;z-index:44;pointer-events:none}
+.chip{position:absolute;left:0;top:0;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:0;background:var(--paper);color:var(--forest);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:translate(0,0) scale(.2);transition:transform .38s cubic-bezier(.2,.9,.3,1.25),opacity .2s;transition-delay:0s;box-shadow:0 6px 18px rgba(43,37,31,.22)}
+.chip b{font-family:var(--serif);font-size:1.35rem;font-weight:600;line-height:1}
+.chip small{font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.chip.on{background:var(--cafe);color:var(--cream)}
+.fan.open{pointer-events:auto}
+.fan.open .chip{opacity:1;transform:translate(var(--x),var(--y)) scale(1);transition-delay:var(--d)}
+.scrim{position:fixed;inset:0;background:rgba(43,37,31,.35);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+
+/* ---------- editor (menú escondido) ---------- */
+.editor{position:fixed;left:0;right:0;bottom:0;max-height:92dvh;background:var(--paper);border-radius:24px 24px 0 0;transform:translateY(105%);transition:transform .35s ease;z-index:60;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.editor.open{transform:none}
+@media (min-width:760px){.editor{left:auto;top:0;width:440px;max-height:none;border-radius:24px 0 0 24px;transform:translateX(105%)}}
+.ed-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 10px}
+.ed-head h3{font-family:var(--serif);font-style:italic;font-size:1.6rem;font-weight:600;color:var(--forest)}
+.ed-x{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:none;font-size:1.2rem;color:var(--ink)}
+.ed-status{padding:0 20px;font-size:.75rem;color:var(--muted)}
+.ed-status.warn{color:var(--terra)}
+.ed-tabs{display:flex;gap:6px;padding:12px 20px;overflow-x:auto;border-bottom:1px solid var(--line)}
+.ed-tabs button{flex:0 0 auto;border:1px solid var(--line);background:none;border-radius:99px;padding:7px 14px;font-size:.85rem;color:var(--ink);white-space:nowrap}
+.ed-tabs button.on{background:var(--forest);border-color:var(--forest);color:var(--cream)}
+.ed-body{flex:1;overflow-y:auto;padding:16px 20px 20px}
+.ed-foot{display:flex;flex-wrap:wrap;gap:8px;padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.btn{border:1px solid var(--line);background:var(--paper);border-radius:12px;padding:9px 14px;font-size:.85rem;color:var(--ink)}
+.btn.main{background:var(--cafe);border-color:var(--cafe);color:var(--cream)}
+.btn.ghost{background:none}
+.btn.danger{color:var(--terra);border-color:#ebc9b3;background:none}
+.btn.sm{padding:6px 10px;font-size:.78rem;border-radius:10px}
+.eb{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px;background:#fff}
+.eb-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:500;font-size:.85rem;color:var(--cafe-d)}
+.eb-h .tools{display:flex;gap:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.f{display:block;margin-bottom:8px}
+.f span{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;font:inherit;font-size:16px;font-weight:400;background:var(--paper);color:var(--ink)}
+.f textarea{min-height:64px;resize:vertical}
+.thumb{display:flex;align-items:center;gap:8px;margin:-2px 0 8px}
+.thumb img{width:54px;height:54px;object-fit:cover;border-radius:10px}
+.tip{font-size:.78rem;color:var(--muted);line-height:1.45;margin:4px 0 12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+</style>
+</head>
+<body>
+
+<main id="track" class="track" aria-live="polite"></main>
+
+<div id="scrim" class="scrim"></div>
+<div id="fan" class="fan" aria-hidden="true"></div>
+
+<nav class="dock" aria-label="Navegación de días">
+  <button id="prev" class="dock-btn" aria-label="Anterior">‹</button>
+  <button id="fanBtn" class="fan-btn" aria-label="Elegir día"><span id="fanLabel">Inicio</span><i>▲</i></button>
+  <button id="next" class="dock-btn" aria-label="Siguiente">›</button>
+</nav>
+
+<aside id="editor" class="editor" aria-hidden="true">
+  <div class="ed-head"><h3>Editar itinerario</h3><button class="ed-x" id="edClose" aria-label="Cerrar">✕</button></div>
+  <p class="ed-status" id="edStatus"></p>
+  <div class="ed-tabs" id="edTabs">
+    <button data-tab="days" class="on">Días</button>
+    <button data-tab="flights">Vuelos</button>
+    <button data-tab="hotels">Hoteles</button>
+    <button data-tab="trip">Viaje</button>
+  </div>
+  <div class="ed-body" id="edBody"></div>
+  <div class="ed-foot">
+    <button class="btn main" id="btnExport">Descargar itinerario.json</button>
+    <button class="btn" id="btnImport">Importar</button>
+    <button class="btn danger" id="btnReset">Restaurar del archivo</button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+  </div>
+</aside>
+
+<!-- Copia de respaldo de los datos (se usa si itinerario.json no carga) -->
+<script id="seed" type="application/json">{"updated": "2026-11-04T13:45:00Z", "trip": {"title": "Puerto Rico", "subtitle": "Isla del Encanto", "start": "2026-11-18", "end": "2026-11-24"}, "flights": [{"code": "AV0045", "leg": "ida", "from": "MEX", "to": "BOG", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0258", "leg": "ida", "from": "BOG", "to": "SJU", "date": "2026-11-18", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a San Juan"}, {"code": "AV0259", "leg": "regreso", "from": "SJU", "to": "BOG", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 1 · conexión en Bogotá"}, {"code": "AV0044", "leg": "regreso", "from": "BOG", "to": "MEX", "date": "2026-11-24", "dep": "", "arr": "", "status": "confirmado", "note": "Tramo 2 · llegada a CDMX"}], "hotels": [{"name": "Hotel CDMX · salida", "city": "Ciudad de México", "date": "2026-11-18", "status": "pendiente", "note": "Por definir según el horario del AV0045."}, {"name": "Hotel CDMX · regreso", "city": "Ciudad de México", "date": "2026-11-24", "status": "pendiente", "note": "Por definir según la hora de llegada del AV0044."}], "days": [{"date": "2026-11-18", "title": "Rumbo a la isla", "cover": "", "activities": []}, {"date": "2026-11-19", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-20", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-21", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-22", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-23", "title": "Por planear", "cover": "", "activities": []}, {"date": "2026-11-24", "title": "De vuelta a casa", "cover": "", "activities": []}]}</script>
+
+<script>
+(() => {
+const LS_KEY = 'tripPR.v1';
+const AIRPORTS = { MEX:'Ciudad de México', BOG:'Bogotá', SJU:'San Juan', PTY:'Panamá', CUN:'Cancún' };
+const $ = s => document.querySelector(s);
+const track = $('#track'), fan = $('#fan'), scrim = $('#scrim'), fanBtn = $('#fanBtn');
+const editor = $('#editor'), edBody = $('#edBody');
+let state, fileData, cur = 0, edTab = 'days', edDay = 0;
+
+/* ---------- utilidades ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const asDate = iso => new Date(iso + 'T12:00:00');
+const fmt = (iso, o) => iso ? asDate(iso).toLocaleDateString('es-MX', o) : '';
+const clone = o => JSON.parse(JSON.stringify(o));
+const safeUrl = u => /^(https?:|data:image\/|fotos\/|\.\/|[\w-]+\/)/i.test(u || '') || /^[\w.-]+\.(jpe?g|png|webp|gif)$/i.test(u || '') ? u : '';
+const extUrl = u => /^https?:\/\//i.test(u || '') ? u : '';
+
+function setPath(obj, path, val){
+  const k = path.split('.'); let o = obj;
+  for (let i = 0; i < k.length - 1; i++) o = o[k[i]];
+  o[k[k.length - 1]] = val;
+}
+function getPath(obj, path){ return path.split('.').reduce((o, k) => o?.[k], obj); }
+
+function normalize(){
+  state.trip ||= { title:'Mi viaje', subtitle:'', start:'', end:'' };
+  state.flights ||= []; state.hotels ||= []; state.days ||= [];
+  state.days.forEach(d => { d.activities ||= []; });
+}
+
+/* ---------- carga ---------- */
+async function load(){
+  const seed = JSON.parse($('#seed').textContent);
+  fileData = seed;
+  try {
+    const r = await fetch('itinerario.json', { cache:'no-store' });
+    if (r.ok) fileData = await r.json();
+  } catch(e) {}
+  let local = null;
+  try { local = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e) {}
+  const newer = local && Date.parse(local.updated || 0) > Date.parse(fileData.updated || 0);
+  state = newer ? local : clone(fileData);
+  normalize(); renderAll();
+  if (location.hash === '#editar') openEditor();
+}
+
+/* ---------- vistas ---------- */
+const sunSvg = `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="32" cy="32" r="11"/>${Array.from({length:12},(_,i)=>{const a=i*Math.PI/6,r1=17,r2=i%2?23:27;return `<line x1="${32+r1*Math.cos(a)}" y1="${32+r1*Math.sin(a)}" x2="${32+r2*Math.cos(a)}" y2="${32+r2*Math.sin(a)}"/>`}).join('')}</svg>`;
+const bedSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 18V7M3 14h18v4M21 14v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>`;
+
+function countdown(){
+  const { start, end } = state.trip; if (!start) return '';
+  const today = new Date(); today.setHours(12,0,0,0);
+  const ds = Math.round((asDate(start) - today) / 864e5);
+  const de = end ? Math.round((asDate(end) - today) / 864e5) : ds;
+  if (ds > 1) return `Faltan ${ds} días`;
+  if (ds === 1) return '¡Es mañana!';
+  if (ds === 0) return '¡Hoy empieza!';
+  if (de >= 0) return `Día ${1 - ds} del viaje`;
+  return 'Viaje completado ✦';
+}
+
+function flightCard(f){
+  const ok = f.status === 'confirmado';
+  const t = v => v ? `<span class="t">${esc(v)}</span>` : `<span class="t tbd">por confirmar</span>`;
+  return `<article class="card flight">
+    <div class="f-top"><span class="f-code">${esc(f.code || 'Vuelo')}</span><span class="badge ${ok?'ok':'warn'}">${ok?'Confirmado':'Pendiente'}</span></div>
+    <div class="f-route">
+      <div><b>${esc(f.from)}</b><small>${esc(AIRPORTS[f.from] || '')}</small>${t(f.dep)}</div>
+      <div class="f-line">— ✈ —</div>
+      <div class="r"><b>${esc(f.to)}</b><small>${esc(AIRPORTS[f.to] || '')}</small>${t(f.arr)}</div>
+    </div>
+    <p class="f-foot">${esc(fmt(f.date,{weekday:'short',day:'numeric',month:'short'}))}${f.note ? ' · ' + esc(f.note) : ''}</p>
+  </article>`;
+}
+
+function hotelCard(h){
+  const ok = h.status === 'confirmado';
+  return `<article class="card hotel ${ok?'':'pending'}">
+    <div class="ico">${bedSvg}</div>
+    <div><h4>${esc(h.name || 'Hotel')}</h4>
+      <p>${esc(h.city || '')}${h.date ? ' · ' + esc(fmt(h.date,{weekday:'short',day:'numeric',month:'short'})) : ''}</p>
+      ${h.note ? `<p>${esc(h.note)}</p>` : ''}
+      <span class="badge ${ok?'ok':'warn'}">${ok?'Confirmado':'No confirmado'}</span></div>
+  </article>`;
+}
+
+function homeSlide(){
+  const t = state.trip;
+  const range = t.start ? `${fmt(t.start,{day:'numeric'})} — ${fmt(t.end || t.start,{day:'numeric',month:'short',year:'numeric'})}` : '';
+  const legs = ['ida','regreso'].map(l => {
+    const fs = state.flights.filter(f => (f.leg || 'ida') === l);
+    return fs.length ? `<p class="leg">${l === 'ida' ? 'Ida' : 'Regreso'}</p>${fs.map(flightCard).join('')}` : '';
+  }).join('');
+  return `<section class="slide home">
+    <div class="arch">
+      <button class="logo" id="logo" aria-label="${esc(t.title)}">${sunSvg}</button>
+      <p class="eyebrow">Itinerario de viaje</p>
+      <h1>${esc(t.title)}</h1>
+      ${t.subtitle ? `<p class="sub">${esc(t.subtitle)}</p>` : ''}
+      <p class="dates">${esc(range)}</p>
+      <span class="count">${esc(countdown())}</span>
+    </div>
+    <div class="wrap">
+      ${state.flights.length ? `<h2 class="sec">Vuelos</h2>${legs}` : ''}
+      ${state.hotels.length ? `<h2 class="sec">Hospedaje</h2>${state.hotels.map(hotelCard).join('')}` : ''}
+      <h2 class="sec">Los días</h2>
+      <ul class="daylist">${state.days.map((d,i) => `<li><button data-go="${i+1}"><span class="n">${i+1}</span><span class="tx"><b>${esc(d.title || 'Día ' + (i+1))}</b><small>${esc(fmt(d.date,{weekday:'long',day:'numeric',month:'long'}))}</small></span></button></li>`).join('')}</ul>
+      <p class="hint">Desliza hacia los lados o usa el botón de abajo ✦</p>
+    </div>
+  </section>`;
+}
+
+function daySlide(d, i){
+  const flights = state.flights.filter(f => f.date === d.date);
+  const hotels = state.hotels.filter(h => h.date === d.date);
+  const cover = safeUrl(d.cover);
+  const acts = d.activities.map(a => {
+    const map = extUrl(a.map) || (a.place ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.place) : '');
+    const photo = safeUrl(a.photo);
+    return `<li class="act"><div class="act-time">${esc(a.time || '·')}</div><div class="act-body">
+      <h4>${esc(a.title || 'Actividad')}</h4>
+      ${a.place ? `<p class="place">${esc(a.place)}</p>` : ''}
+      ${a.note ? `<p class="note">${esc(a.note)}</p>` : ''}
+      ${photo ? `<img src="${esc(photo)}" alt="${esc(a.title)}" loading="lazy">` : ''}
+      ${map ? `<a href="${esc(map)}" target="_blank" rel="noopener">Ver en el mapa ↗</a>` : ''}
+    </div></li>`;
+  }).join('');
+  return `<section class="slide day">
+    <header class="day-hero ${i % 2 ? 'alt' : ''}">
+      ${cover ? `<img src="${esc(cover)}" alt="">` : ''}
+      <span class="day-num">Día ${i+1}</span>
+      <p class="day-date">${esc(fmt(d.date,{weekday:'long',day:'numeric',month:'long'}))}</p>
+      <h2 class="day-title">${esc(d.title || '')}</h2>
+    </header>
+    <div class="wrap">
+      ${flights.length ? `<h3 class="sec">Vuelos del día</h3>${flights.map(flightCard).join('')}` : ''}
+      ${hotels.length ? `<h3 class="sec">Hospedaje</h3>${hotels.map(hotelCard).join('')}` : ''}
+      <h3 class="sec">Actividades</h3>
+      ${acts ? `<ol class="timeline">${acts}</ol>` : `<div class="empty"><b>Día libre… por ahora</b>Agrega actividades desde el menú de edición.</div>`}
+    </div>
+  </section>`;
+}
+
+function renderAll(keepScroll = true){
+  const y = [...track.children].map(s => s.scrollTop);
+  track.innerHTML = homeSlide() + state.days.map(daySlide).join('');
+  if (keepScroll) [...track.children].forEach((s,i) => { s.scrollTop = y[i] || 0; });
+  cur = Math.min(cur, state.days.length);
+  track.scrollTo({ left: cur * track.clientWidth, behavior:'instant' });
+  buildFan(); updateDock();
+}
+
+/* ---------- navegación ---------- */
+function go(i, smooth = true){
+  cur = Math.max(0, Math.min(i, state.days.length));
+  track.scrollTo({ left: cur * track.clientWidth, behavior: smooth ? 'smooth' : 'instant' });
+  updateDock();
+}
+function updateDock(){
+  $('#fanLabel').textContent = cur === 0 ? 'Inicio' : `Día ${cur}`;
+  $('#prev').disabled = cur === 0;
+  $('#next').disabled = cur === state.days.length;
+  [...fan.children].forEach((c,i) => c.classList.toggle('on', i === cur));
+}
+let st;
+track.addEventListener('scroll', () => {
+  clearTimeout(st);
+  st = setTimeout(() => { const i = Math.round(track.scrollLeft / track.clientWidth); if (i !== cur){ cur = i; updateDock(); } }, 60);
+}, { passive:true });
+window.addEventListener('resize', () => go(cur, false));
+$('#prev').onclick = () => go(cur - 1);
+$('#next').onclick = () => go(cur + 1);
+document.addEventListener('keydown', e => {
+  if (editor.classList.contains('open') || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+  if (e.key === 'ArrowRight') go(cur + 1);
+  if (e.key === 'ArrowLeft') go(cur - 1);
+  if (e.key === 'Escape') closeFan();
+  if (e.key === 'E' && e.shiftKey) openEditor();
+});
+track.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(+b.dataset.go); });
+
+/* abanico */
+function buildFan(){
+  const items = [{ b:'✦', s:'Inicio' }, ...state.days.map(d => ({ b: d.date ? asDate(d.date).getDate() : '·', s: fmt(d.date,{weekday:'short'}).replace('.','') }))];
+  const n = items.length;
+  const r = Math.min(150, (window.innerWidth - 72) / 2);
+  const rings = n > 9 ? [Math.ceil(n * .58), n - Math.ceil(n * .58)] : [n];
+  let html = '', k = 0;
+  rings.forEach((cnt, ri) => {
+    const R = ri === 0 ? r : r - 70;
+    for (let j = 0; j < cnt; j++, k++){
+      const a = Math.PI + (cnt === 1 ? .5 : j / (cnt - 1)) * Math.PI;
+      const x = Math.round(R * Math.cos(a)), y = Math.round(R * Math.sin(a)) - 34;
+      html += `<button class="chip ${k === cur ? 'on' : ''}" data-i="${k}" style="--x:${x}px;--y:${y}px;--d:${k * 25}ms" aria-label="${k ? 'Día ' + k : 'Inicio'}"><b>${esc(items[k].b)}</b><small>${esc(items[k].s)}</small></button>`;
+    }
+  });
+  fan.innerHTML = html;
+}
+function openFan(){ fan.classList.add('open'); scrim.classList.add('on'); fanBtn.classList.add('open'); fan.setAttribute('aria-hidden','false'); }
+function closeFan(){ fan.classList.remove('open'); fanBtn.classList.remove('open'); fan.setAttribute('aria-hidden','true'); if (!editor.classList.contains('open')) scrim.classList.remove('on'); }
+fanBtn.onclick = () => fan.classList.contains('open') ? closeFan() : openFan();
+fan.addEventListener('click', e => { const c = e.target.closest('.chip'); if (c){ go(+c.dataset.i); closeFan(); } });
+scrim.onclick = () => { closeFan(); closeEditor(); };
+
+/* ---------- menú escondido: mantener presionado el sol ---------- */
+let lp;
+track.addEventListener('pointerdown', e => { if (e.target.closest('#logo')) lp = setTimeout(openEditor, 700); });
+['pointerup','pointerleave','pointercancel'].forEach(ev => track.addEventListener(ev, () => clearTimeout(lp)));
+track.addEventListener('contextmenu', e => { if (e.target.closest('#logo')) e.preventDefault(); });
+
+function openEditor(){
+  closeFan();
+  edDay = Math.max(0, cur - 1);
+  renderEditor(); setStatus();
+  editor.classList.add('open'); editor.setAttribute('aria-hidden','false'); scrim.classList.add('on');
+  if (navigator.vibrate) navigator.vibrate(15);
+}
+function closeEditor(){
+  editor.classList.remove('open'); editor.setAttribute('aria-hidden','true'); scrim.classList.remove('on');
+  if (location.hash === '#editar') history.replaceState(null, '', location.pathname);
+}
+$('#edClose').onclick = closeEditor;
+
+/* ---------- guardado ---------- */
+let saveT;
+function save(){
+  state.updated = new Date().toISOString();
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); setStatus(); }
+  catch(e){ setStatus('No hay espacio en este dispositivo. Usa fotos de la carpeta fotos/ en lugar de subirlas aquí.', true); }
+}
+function changed(structural){
+  clearTimeout(saveT);
+  if (structural){ save(); renderAll(); renderEditor(); }
+  else saveT = setTimeout(() => { save(); renderAll(); }, 250);
+}
+function setStatus(msg, warn){
+  const el = $('#edStatus');
+  if (msg){ el.textContent = msg; el.classList.toggle('warn', !!warn); return; }
+  const dirty = Date.parse(state.updated || 0) > Date.parse(fileData.updated || 0);
+  el.textContent = dirty ? 'Cambios guardados en este dispositivo · descarga el JSON y súbelo a GitHub para que se vean en todos lados.' : 'Al día con el archivo publicado.';
+  el.classList.toggle('warn', dirty);
+}
+
+/* ---------- formularios del editor ---------- */
+const F = (label, path, type = 'text', ph = '') => {
+  const v = getPath(state, path) ?? '';
+  return `<label class="f"><span>${label}</span><input type="${type}" data-path="${path}" value="${esc(v)}" placeholder="${esc(ph)}"></label>`;
+};
+const T = (label, path) => `<label class="f"><span>${label}</span><textarea data-path="${path}">${esc(getPath(state, path) ?? '')}</textarea></label>`;
+const S = (label, path, opts) => {
+  const v = getPath(state, path);
+  return `<label class="f"><span>${label}</span><select data-path="${path}">${opts.map(([k,t]) => `<option value="${k}" ${k === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label>`;
+};
+const STATUS = [['confirmado','Confirmado'],['pendiente','No confirmado']];
+const PHOTO = (label, path) => {
+  const v = getPath(state, path) || '';
+  const isData = v.startsWith('data:');
+  const src = safeUrl(v);
+  return `<label class="f"><span>${label}</span><input type="text" data-path="${path}" value="${isData ? '' : esc(v)}" placeholder="${isData ? '(foto subida desde este dispositivo)' : 'fotos/mi-foto.jpg o enlace'}"></label>
+    <div class="thumb">${src ? `<img src="${esc(src)}" alt="">` : ''}
+      <label class="btn sm">Subir foto<input type="file" accept="image/*" data-upload="${path}" hidden></label>
+      ${v ? `<button class="btn sm ghost" data-act="clear" data-path="${path}">Quitar</button>` : ''}</div>`;
+};
+
+function renderEditor(){
+  document.querySelectorAll('#edTabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === edTab));
+  let h = '';
+  if (edTab === 'trip'){
+    h = `${F('Título','trip.title')}${F('Subtítulo','trip.subtitle')}
+      <div class="grid2">${F('Inicio','trip.start','date')}${F('Fin','trip.end','date')}</div>
+      <p class="tip">Las fechas de inicio y fin se usan para la cuenta regresiva. Los días se agregan o quitan en la pestaña Días.</p>`;
+  }
+  if (edTab === 'flights'){
+    h = state.flights.map((f,i) => `<div class="eb">
+      <div class="eb-h">${esc(f.code || 'Vuelo')} <span class="tools"><button class="btn sm danger" data-act="del" data-list="flights" data-i="${i}">Eliminar</button></span></div>
+      <div class="grid2">${F('Vuelo',`flights.${i}.code`,'text','AV0045')}${S('Trayecto',`flights.${i}.leg`,[['ida','Ida'],['regreso','Regreso']])}</div>
+      <div class="grid2">${F('Desde',`flights.${i}.from`,'text','MEX')}${F('Hacia',`flights.${i}.to`,'text','SJU')}</div>
+      ${F('Fecha',`flights.${i}.date`,'date')}
+      <div class="grid2">${F('Sale',`flights.${i}.dep`,'time')}${F('Llega',`flights.${i}.arr`,'time')}</div>
+      ${S('Estado',`flights.${i}.status`,STATUS)}${F('Nota',`flights.${i}.note`)}
+    </div>`).join('') + `<button class="btn" data-act="add-flight">+ Agregar vuelo</button>`;
+  }
+  if (edTab === 'hotels'){
+    h = state.hotels.map((x,i) => `<div class="eb">
+      <div class="eb-h">${esc(x.name || 'Hotel')} <span class="tools"><button class="btn sm danger" data-act="del" data-list="hotels" data-i="${i}">Eliminar</button></span></div>
+      ${F('Nombre',`hotels.${i}.name`)}${F('Ciudad',`hotels.${i}.city`)}
+      <div class="grid2">${F('Se muestra el día',`hotels.${i}.date`,'date')}${S('Estado',`hotels.${i}.status`,STATUS)}</div>
+      ${T('Nota (dirección, reserva, horario…)',`hotels.${i}.note`)}
+    </div>`).join('') + `<button class="btn" data-act="add-hotel">+ Agregar hotel</button>`;
+  }
+  if (edTab === 'days'){
+    if (!state.days.length){ h = `<button class="btn" data-act="add-day">+ Agregar día</button>`; }
+    else {
+      edDay = Math.min(edDay, state.days.length - 1);
+      const d = state.days[edDay], p = `days.${edDay}`;
+      h = `<label class="f"><span>Día a editar</span><select id="edDaySel">${state.days.map((x,i) => `<option value="${i}" ${i === edDay ? 'selected' : ''}>Día ${i+1} · ${esc(fmt(x.date,{weekday:'short',day:'numeric',month:'short'}))}</option>`).join('')}</select></label>
+        <div class="grid2">${F('Fecha',`${p}.date`,'date')}${F('Título',`${p}.title`)}</div>
+        ${PHOTO('Foto de portada',`${p}.cover`)}
+        <h4 class="sec">Actividades</h4>
+        ${d.activities.map((a,j) => `<div class="eb">
+          <div class="eb-h">${esc(a.time || '')} ${esc(a.title || 'Actividad')}
+            <span class="tools"><button class="btn sm ghost" data-act="up" data-j="${j}" aria-label="Subir">↑</button><button class="btn sm ghost" data-act="down" data-j="${j}" aria-label="Bajar">↓</button><button class="btn sm danger" data-act="del-act" data-j="${j}">✕</button></span></div>
+          <div class="grid2">${F('Hora',`${p}.activities.${j}.time`,'time')}${F('Actividad',`${p}.activities.${j}.title`,'text','Playa, cena…')}</div>
+          ${F('Lugar',`${p}.activities.${j}.place`,'text','Viejo San Juan')}
+          ${T('Notas',`${p}.activities.${j}.note`)}
+          ${F('Enlace de mapa (opcional)',`${p}.activities.${j}.map`,'url','https://maps.app.goo.gl/…')}
+          ${PHOTO('Foto',`${p}.activities.${j}.photo`)}
+        </div>`).join('')}
+        <div class="row"><button class="btn main" data-act="add-act">+ Agregar actividad</button><button class="btn" data-act="sort">Ordenar por hora</button></div>
+        <div class="row"><button class="btn" data-act="add-day">+ Agregar día al final</button><button class="btn danger" data-act="del-day">Eliminar este día</button></div>`;
+    }
+  }
+  edBody.innerHTML = h;
+}
+
+$('#edTabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b){ edTab = b.dataset.tab; renderEditor(); edBody.scrollTop = 0; } });
+
+edBody.addEventListener('input', e => {
+  const p = e.target.dataset.path; if (!p) return;
+  let v = e.target.value;
+  if (/\.(from|to)$/.test(p)) v = v.toUpperCase();
+  setPath(state, p, v); changed(false);
+});
+edBody.addEventListener('change', async e => {
+  if (e.target.id === 'edDaySel'){ edDay = +e.target.value; renderEditor(); go(edDay + 1); return; }
+  if (e.target.tagName === 'SELECT' && e.target.dataset.path){ changed(true); return; }
+  const up = e.target.dataset.upload;
+  if (up && e.target.files[0]){
+    try { setPath(state, up, await compress(e.target.files[0])); changed(true); }
+    catch(err){ setStatus('No se pudo leer esa imagen.', true); }
+  }
+});
+edBody.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act, acts = state.days[edDay]?.activities, j = +b.dataset.j;
+  if (act === 'add-flight') state.flights.push({ code:'', leg:'ida', from:'', to:'', date: state.trip.start || '', dep:'', arr:'', status:'pendiente', note:'' });
+  if (act === 'add-hotel') state.hotels.push({ name:'', city:'', date:'', status:'pendiente', note:'' });
+  if (act === 'del'){ if (!confirm('¿Eliminar este elemento?')) return; state[b.dataset.list].splice(+b.dataset.i, 1); }
+  if (act === 'add-act') acts.push({ time:'', title:'', place:'', note:'', map:'', photo:'' });
+  if (act === 'del-act'){ if (!confirm('¿Eliminar esta actividad?')) return; acts.splice(j, 1); }
+  if (act === 'up' && j > 0) [acts[j-1], acts[j]] = [acts[j], acts[j-1]];
+  if (act === 'down' && j < acts.length - 1) [acts[j+1], acts[j]] = [acts[j], acts[j+1]];
+  if (act === 'sort') acts.sort((a,b) => (a.time || '99').localeCompare(b.time || '99'));
+  if (act === 'clear') setPath(state, b.dataset.path, '');
+  if (act === 'add-day'){
+    const last = state.days[state.days.length - 1];
+    let date = state.trip.start || '';
+    if (last?.date){ const d = asDate(last.date); d.setDate(d.getDate() + 1); date = d.toISOString().slice(0,10); }
+    state.days.push({ date, title:'Por planear', cover:'', activities:[] });
+    edDay = state.days.length - 1;
+  }
+  if (act === 'del-day'){ if (!confirm('¿Eliminar este día y sus actividades?')) return; state.days.splice(edDay, 1); edDay = Math.max(0, edDay - 1); }
+  changed(true);
+  if (act === 'add-act') edBody.scrollTop = edBody.scrollHeight;
+});
+
+function compress(file, max = 1400, q = .78){
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const s = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', q));
+    };
+    img.onerror = rej; img.src = url;
+  });
+}
+
+/* ---------- exportar / importar / restaurar ---------- */
+$('#btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'itinerario.json'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+$('#btnImport').onclick = () => $('#importFile').click();
+$('#importFile').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { state = JSON.parse(await f.text()); normalize(); changed(true); setStatus('Itinerario importado.'); }
+  catch(err){ setStatus('Ese archivo no es un itinerario válido.', true); }
+  e.target.value = '';
+};
+$('#btnReset').onclick = () => {
+  if (!confirm('Se borrarán los cambios guardados en este dispositivo y se cargará itinerario.json. ¿Continuar?')) return;
+  try { localStorage.removeItem(LS_KEY); } catch(e) {}
+  state = clone(fileData); normalize(); renderAll(); renderEditor(); setStatus();
+};
+
+load();
+})();
+</script>
+</body>
+</html>
