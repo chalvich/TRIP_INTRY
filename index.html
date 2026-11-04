@@ -23,7 +23,7 @@ body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weigh
 button{font:inherit;cursor:pointer}
 img{display:block;max-width:100%}
 .stage{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-.page{max-width:600px;min-height:100%;margin:0 auto;padding:0 18px 60px}
+.page{max-width:600px;min-height:100%;margin:0 auto;padding:0 18px 150px}
 .head{position:sticky;top:0;z-index:5;background:var(--cream);padding-top:12px;margin:0 -4px;padding-left:4px;padding-right:4px}
 .head::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px;background:linear-gradient(var(--cream),rgba(245,239,228,0));pointer-events:none}
 
@@ -128,6 +128,22 @@ img{display:block;max-width:100%}
 .pager button small{display:block;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .pager button b{font-family:var(--serif);font-weight:600;font-size:1.1rem}
 .pager .sp{flex:1}
+.dock{position:fixed;left:16px;right:88px;bottom:calc(38px + env(safe-area-inset-bottom));z-index:25;display:flex;gap:8px;pointer-events:none;
+  transition:bottom .35s cubic-bezier(.2,.85,.25,1)}
+.dock button{pointer-events:auto;flex:1;min-width:0;height:36px;border-radius:18px;border:1px solid rgba(95,107,72,.22);background:rgba(251,248,242,.66);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  color:var(--forest);display:flex;flex-direction:column;justify-content:center;padding:0 14px;text-align:left;overflow:hidden;
+  transition:height .35s cubic-bezier(.2,.85,.25,1),background .25s,box-shadow .25s,opacity .25s,border-radius .35s}
+.dock button.nx{text-align:right;align-items:flex-end}
+.dock button.empty{visibility:hidden}
+.dock .sm{font-size:.78rem;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.dock .bg{display:none}
+.dock .bg small{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.dock .bg b{display:block;font-family:var(--serif);font-weight:600;font-size:1.08rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock.big button{height:62px;border-radius:16px;background:rgba(251,248,242,.97);box-shadow:0 10px 28px rgba(46,58,41,.18)}
+.dock.big .sm{display:none}
+.dock.big .bg{display:block;max-width:100%;animation:drop .25s ease}
+.pull{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom));transform:translateX(-50%);width:36px;height:4px;border-radius:2px;background:rgba(46,58,41,.18);z-index:24;pointer-events:none;transition:opacity .25s}
+.dock.big + .pull{opacity:0}
 .daylist{list-style:none;display:grid;gap:8px}
 .daylist button{width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:10px 14px;color:var(--ink)}
 .daylist .n{flex:0 0 42px;height:42px;border-radius:50%;background:var(--forest);color:var(--cream);display:grid;place-items:center;font-family:var(--serif);font-size:1.25rem;font-weight:600}
@@ -141,11 +157,12 @@ img{display:block;max-width:100%}
 .eyebrow,.day-num{view-transition-name:kicker}
 .vbody{view-transition-name:vbody}
 .knob{view-transition-name:knob}
+.dock{view-transition-name:dock}
 .track{view-transition-name:track}
 .bubble{view-transition-name:bubble}
 ::view-transition-old(root),::view-transition-new(root){animation:none}
-::view-transition-old(knob),::view-transition-old(track),::view-transition-old(bubble){display:none}
-::view-transition-new(knob),::view-transition-new(track),::view-transition-new(bubble){animation:none}
+::view-transition-old(knob),::view-transition-old(track),::view-transition-old(bubble),::view-transition-old(dock){display:none}
+::view-transition-new(knob),::view-transition-new(track),::view-transition-new(bubble),::view-transition-new(dock){animation:none}
 ::view-transition-group(hero),::view-transition-group(title),::view-transition-group(kicker){animation-duration:.55s;animation-timing-function:cubic-bezier(.2,.85,.25,1)}
 ::view-transition-old(hero),::view-transition-new(hero){height:100%;object-fit:cover;animation-duration:.45s}
 ::view-transition-old(vbody){animation:vt-out .26s ease both}
@@ -254,6 +271,7 @@ html[data-dir=back]::view-transition-new(vbody){animation-name:vt-in-back}
   <button id="knob" class="knob" aria-label="Cambiar de día: desliza hacia arriba o abajo"><b>✦</b><small>Inicio</small></button>
 </div>
 <div id="bubble" class="bubble" aria-hidden="true"></div>
+<nav id="dock" class="dock" aria-label="Cambiar de día"></nav><span class="pull" aria-hidden="true"></span>
 
 <div id="scrim" class="scrim"></div>
 <div id="toast" class="toast" role="status"></div>
@@ -481,7 +499,6 @@ function intro(){
     <h2 class="sec">Los días</h2>
     <ul class="daylist">${state.days.map((d,i) => `<li><button data-go="${i+1}"><span class="n">${d.date ? asDate(d.date).getDate() : i+1}</span><span class="tx"><b>${esc(d.title || 'Día ' + (i+1))}</b><small>Día ${i+1} · ${esc(fmt(d.date,{weekday:'long',day:'numeric',month:'long'}))}</small></span></button></li>`).join('')}</ul>
     <p class="hint">Gira la rueda de la derecha o desliza de lado para cambiar de día ✦</p>
-    ${pager(0)}
     </div>
   </section>`;
 }
@@ -526,7 +543,6 @@ function daySection(d, i){
       <h3 class="sec">Actividades</h3>
       ${acts ? `<div class="acts">${acts}</div>` : `<div class="empty"><b>Día libre… por ahora</b>Agrega actividades desde el menú de edición.</div>`}
       ${i === state.days.length - 1 ? '<p class="end">¡Buen viaje! ✦</p>' : ''}
-      ${pager(i + 1)}
     </div>
   </section>`;
 }
@@ -540,6 +556,7 @@ function renderView(reset){
   const st = stage.scrollTop;
   page.innerHTML = cur === 0 ? intro() : daySection(state.days[cur - 1], cur - 1);
   stage.scrollTop = reset ? 0 : st;
+  renderDock(); if (reset) bigDock(false);
 }
 function renderAll(){
   cur = clamp(cur, 0, stopCount() - 1);
@@ -577,7 +594,7 @@ function placeTrack(){
   trackEl.style.top = (cy - ABOVE) + 'px';
   trackEl.style.height = (ABOVE + BELOW) + 'px';
   trackEl.style.transformOrigin = `50% ${ABOVE}px`;
-  bubble.style.top = cy + 'px';
+  bubble.style.top = (cy - 72) + 'px';   // la burbuja va arriba de la barra de abajo
 }
 function paintDial(){
   // la bolita no se mueve: el riel de fechas se desliza debajo de ella
@@ -657,6 +674,49 @@ knob.addEventListener('wheel', e => {
   show(cur + Math.sign(e.deltaY));
 }, { passive:false });
 addEventListener('resize', () => { placeTrack(); paintDial(); });
+
+/* ---------- barra de abajo: compacta, crece con un jalón hacia arriba ---------- */
+const dock = $('#dock');
+let dockT;
+function renderDock(){
+  const n = state.days.length;
+  const short = k => k === 0 ? 'Inicio' : `${fmt(state.days[k-1]?.date,{weekday:'short',day:'numeric'}).replace('.','')}`;
+  const long = k => k === 0 ? 'Inicio' : `Día ${k} · ${fmt(state.days[k-1]?.date,{weekday:'short',day:'numeric'})}`;
+  const btn = (k, nx) => (k < 0 || k > n)
+    ? `<button class="${nx ? 'nx ' : ''}empty" tabindex="-1" aria-hidden="true"></button>`
+    : `<button class="${nx ? 'nx' : ''}" data-go="${k}" aria-label="${nx ? 'Siguiente' : 'Anterior'}: ${esc(long(k))}">
+        <span class="sm">${nx ? '' : '‹ '}${esc(short(k))}${nx ? ' ›' : ''}</span>
+        <span class="bg"><small>${nx ? 'Siguiente →' : '← Anterior'}</small><b>${esc(long(k))}</b></span></button>`;
+  dock.innerHTML = btn(cur - 1, false) + btn(cur + 1, true);
+}
+function bigDock(on = true){
+  clearTimeout(dockT);
+  const was = dock.classList.contains('big');
+  dock.classList.toggle('big', on);
+  if (on){
+    if (!was && navigator.vibrate) navigator.vibrate(8);
+    dockT = setTimeout(() => dock.classList.remove('big'), 5000);
+  }
+}
+dock.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) show(+b.dataset.go); });
+const atBottom = () => stage.scrollTop + stage.clientHeight >= stage.scrollHeight - 4;
+let py = null, pullFrom = 0, lastTop = 0, wheelAcc = 0;
+stage.addEventListener('touchstart', e => { py = e.touches[0].clientY; pullFrom = atBottom() ? py : null; }, { passive:true });
+stage.addEventListener('touchmove', e => {
+  const y = e.touches[0].clientY;
+  if (pullFrom === null && atBottom()) pullFrom = y;          // llegó al final durante el gesto
+  if (pullFrom !== null && pullFrom - y > 55) bigDock(true);   // "jalón" hacia arriba al final
+}, { passive:true });
+stage.addEventListener('touchend', () => { py = null; pullFrom = null; }, { passive:true });
+stage.addEventListener('wheel', e => {
+  if (e.deltaY > 0 && atBottom()){ wheelAcc += e.deltaY; if (wheelAcc > 140){ bigDock(true); wheelAcc = 0; } }
+  else wheelAcc = 0;
+}, { passive:true });
+stage.addEventListener('scroll', () => {
+  const t = stage.scrollTop;
+  if (t < lastTop - 24 && dock.classList.contains('big')) bigDock(false);   // al volver a subir se encoge
+  lastTop = t;
+}, { passive:true });
 
 /* deslizar de lado sobre la pantalla también cambia de día */
 let sx = null, sy = 0, st0 = 0;
@@ -907,6 +967,23 @@ $('#btnReset').onclick = () => {
   try { localStorage.removeItem(LS_KEY); } catch(e) {}
   state = clone(fileData); normalize(); renderAll(); renderEditor(); setStatus();
 };
+
+/* ---------- cuadrícula de referencia: abre la página con #grid ---------- */
+function gridOverlay(){
+  if (!/grid/.test(location.hash)) return;
+  const g = document.createElement('div');
+  g.style.cssText = 'position:fixed;inset:0;z-index:999;pointer-events:none;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(20,1fr)';
+  const cols = 'ABCD';
+  for (let r = 1; r <= 20; r++) for (let c = 0; c < 4; c++){
+    const cell = document.createElement('div');
+    cell.style.cssText = 'border:1px solid rgba(220,40,90,.35);font:600 10px system-ui;color:rgba(200,30,80,.9);padding:2px 3px;background:' + ((r + c) % 2 ? 'rgba(255,0,90,.04)' : 'transparent');
+    cell.textContent = cols[c] + r;
+    g.appendChild(cell);
+  }
+  document.body.appendChild(g);
+}
+gridOverlay();
+addEventListener('hashchange', () => location.reload());
 
 load();
 })();
